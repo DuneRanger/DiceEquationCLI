@@ -28,14 +28,14 @@ public class ProbabilisticNumber<T>(T[] values, double[] probs) :
         return _values[^1];
     }
 
-    static ProbabilisticNumber<T> FromDictionary(IDictionary<T, double> dict)
+    public static ProbabilisticNumber<T> FromDictionary(IDictionary<T, double> dict)
     {
         var values = dict.Keys.ToArray();
         var probs = dict.Values.ToArray();
         return new(values, probs);
     }
 
-    static ProbabilisticNumber<T> FromUniform(T[] values)
+    public static ProbabilisticNumber<T> FromUniform(T[] values)
     {
         double prob = 1.0 / values.Length;
         var probs = new double[values.Length];
@@ -43,7 +43,7 @@ public class ProbabilisticNumber<T>(T[] values, double[] probs) :
         return new(values, probs);
     }
 
-    static ProbabilisticNumber<int> FromUniformRange(int start, int end)
+    public static ProbabilisticNumber<int> FromUniformRange(int start, int end)
     {
         var values = new int[end - start];
         var probs = new double[values.Length];
@@ -55,7 +55,7 @@ public class ProbabilisticNumber<T>(T[] values, double[] probs) :
         return new ProbabilisticNumber<int>(values, probs);
     }
     
-    static ProbabilisticNumber<long> FromUniformRange(long start, long end)
+    public static ProbabilisticNumber<long> FromUniformRange(long start, long end)
     {
         var values = new long[end - start];
         var probs = new double[values.Length];
