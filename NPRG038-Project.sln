@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProbabilisticNumberLibrary", "src\ProbabilisticNumberLibrary\ProbabilisticNumberLibrary.csproj", "{4D8FEADC-B5F7-4D11-A1EA-802BC7BED58D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiceNumberLibrary", "src\DiceNumberLibrary\DiceNumberLibrary.csproj", "{AFEF6546-F8D3-4B67-8047-073DE0CB88B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4D8FEADC-B5F7-4D11-A1EA-802BC7BED58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D8FEADC-B5F7-4D11-A1EA-802BC7BED58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D8FEADC-B5F7-4D11-A1EA-802BC7BED58D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFEF6546-F8D3-4B67-8047-073DE0CB88B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFEF6546-F8D3-4B67-8047-073DE0CB88B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFEF6546-F8D3-4B67-8047-073DE0CB88B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFEF6546-F8D3-4B67-8047-073DE0CB88B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
