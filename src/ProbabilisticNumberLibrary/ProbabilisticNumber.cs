@@ -3,19 +3,31 @@ using System.Reflection.Metadata;
 
 namespace ProbabilisticNumberLibrary;
 
-public class ProbabilisticNumber<T>(T[] values, double[] probs) :
+public class ProbabilityException : ApplicationException
+{
+    public ProbabilityException(string message) : base(message) { }
+}
+
+public class ProbabilisticNumber<T> :
     IAdditionOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
     ISubtractionOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
     IMultiplyOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
     IDivisionOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>
     where T : INumber<T>
 {
-    private T[] _values { get; set; } = values;
-    private double[] _probs { get; set; } = probs;
+    private T[] _values { get; set; }
+    private double[] _probs { get; set; }
     private Random _rng = new();
     
     public long Count => _values.Length;
     public Span<T> ValuesView => _values;
+
+    public ProbabilisticNumber(T[] values, double[] probs)
+    {
+        if (values.Length != probs.Length) throw new ArgumentException("Values and probabilities must be of equal length");
+        _values = values;
+        _probs = probs;
+    }
 
     public T Sample()
     {
@@ -25,7 +37,32 @@ public class ProbabilisticNumber<T>(T[] values, double[] probs) :
             prob -= _probs[i];
             if (prob <= 0) return _values[i];
         }
-        return _values[^1];
+        throw new ProbabilityException("Invalid probability sampled");
+    }
+
+    public void Normalize()
+    {
+        double probSum = _probs.Sum();
+        double normalizeFactor = 1 / probSum;
+        for (int i = 0; i < _probs.Length; ++i) _probs[i] *= normalizeFactor;
+    }
+
+    public void PurgeValues(Predicate<T> predicate)
+    {
+        List<int> idxToRemove = new();
+        for (int i = 0; i < _values.Length; ++i)
+        {
+            if (predicate(_values[i])) idxToRemove.Add(i);
+        }
+        var newValues = _values.Where((val, idx) => !idxToRemove.Contains(idx)).ToArray();
+        var newProbs = _probs.Where((prob, idx) => !idxToRemove.Contains(idx)).ToArray();
+        _values = newValues;
+        _probs = newProbs;
+    }
+
+    public void ModifyValues(Func<T, T> modifier)
+    {
+        _values = _values.Select(modifier).ToArray();
     }
 
     public static ProbabilisticNumber<T> FromDictionary(IDictionary<T, double> dict)
