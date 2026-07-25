@@ -3,12 +3,7 @@ using System.Reflection.Metadata;
 
 namespace ProbabilisticNumberLibrary;
 
-public class ProbabilityException : ApplicationException
-{
-    public ProbabilityException(string message) : base(message) { }
-}
-
-public class ProbabilisticNumber<T> :
+public class ProbabilisticNumber<T> : DiscreteDistribution<T>,
     IAdditionOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
     ISubtractionOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
     IMultiplyOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
