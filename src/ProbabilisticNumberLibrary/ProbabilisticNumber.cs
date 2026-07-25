@@ -65,6 +65,45 @@ public class ProbabilisticNumber<T> :
         _values = _values.Select(modifier).ToArray();
     }
 
+    public Dictionary<T, double> ToDictionary()
+    {
+        var dict = new Dictionary<T, double>();
+        for (int i = 0; i < _values.Length; ++i)
+        {
+            dict.TryGetValue(_values[i], out double prob);
+            dict[_values[i]] = prob + _probs[i];
+        }
+        return dict;
+    }
+
+    public Dictionary<string, double> ToDictionaryWithError()
+    {
+        var dict = new Dictionary<string, double>();
+        double errorProb = 1.0;
+        for (int i = 0; i < _values.Length; ++i)
+        {
+            string val = _values[i].ToString()!;
+            dict.TryGetValue(val, out double prob);
+            dict[val] = prob + _probs[i];
+            errorProb -= _probs[i];
+        }
+        if (errorProb > 0) dict["error"] = errorProb;
+        return dict;
+    }
+
+    public string ToFormattedString(int indentLevel = 0)
+    {
+        var dict = ToDictionaryWithError();
+        var sortedKeys = dict.Keys.OrderBy(key => dict[key]);
+        string str = "";
+        foreach (var key in sortedKeys)
+        {
+            for (int i = 0; i < indentLevel; ++i) str += "\t";
+            str += key + ": " + dict[key] + "\n";
+        }
+        return str;
+    }
+
     public static ProbabilisticNumber<T> FromDictionary(IDictionary<T, double> dict)
     {
         var values = dict.Keys.ToArray();

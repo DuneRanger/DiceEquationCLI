@@ -44,5 +44,10 @@ This is done to allow for removing unwanted values from the distribution and "re
 The rationale behind this decision is that despite it being possible to do on the user-side, applying such a filter and then combining with another distribution would otherwise require creating a new filtered distribution, which is just unnecessary additional work for the user.
 Instead it is supported by the library and the normalization of the probabilities must be called explicitly.
 
+#### Serialization and deserialization
+
+The first thing to note is that there may be duplicate values in the distribution.
+Serialization and deserialization methods are allowed to aggregate the probabilities of duplicate values into a single probability.
+
 ## Dice Number Library
 
