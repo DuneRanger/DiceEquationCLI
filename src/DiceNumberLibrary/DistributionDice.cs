@@ -7,9 +7,9 @@ public class DistributionDice<T> : IDiceNumber<T>
 where T : INumber<T>
 {
     private readonly int _rollCount;
-    private ProbabilisticNumber<T> _distribution;
+    private IDiscreteDistribution<T> _distribution;
 
-    public DistributionDice(ProbabilisticNumber<T> distribution, int rollCount = 1)
+    public DistributionDice(IDiscreteDistribution<T> distribution, int rollCount = 1)
     {
         if (rollCount < 0) throw new ArgumentException("Roll count must be greater or equal to 0");
         _rollCount = rollCount;
@@ -23,8 +23,17 @@ where T : INumber<T>
         return sum;
     }
     
-    public ProbabilisticNumber<long> ToProbabilisticNumber()
+    public Dictionary<T, double> ToDictionary()
     {
-        return ProbabilisticNumber<long>.FromUniformRange(_min, _max);
+        return ToDiscreteDistribution().ToDictionary();
+    }
+    
+    public IDiscreteDistribution<T> ToDiscreteDistribution()
+    {
+        var baseDist = ProbabilisticNumber<T>.FromDictionary(_distribution.ToDictionary());
+        // essentially an empty distribution
+        var sumDist = new ProbabilisticNumber<T>([T.AdditiveIdentity], [1.0]);
+        for (int i = 0; i < _rollCount; i++) sumDist += baseDist;
+        return sumDist;
     }
 }

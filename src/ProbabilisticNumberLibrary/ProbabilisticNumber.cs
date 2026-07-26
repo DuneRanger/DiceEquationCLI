@@ -3,7 +3,7 @@ using System.Reflection.Metadata;
 
 namespace ProbabilisticNumberLibrary;
 
-public class ProbabilisticNumber<T> : DiscreteDistribution<T>,
+public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
     IAdditionOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
     ISubtractionOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,
     IMultiplyOperators<ProbabilisticNumber<T>, ProbabilisticNumber<T>, ProbabilisticNumber<T>>,

@@ -3,4 +3,4 @@ using ProbabilisticNumberLibrary;
 
 namespace DiceNumberLibrary;
 
-public interface IDiceNumber<TValue> : DiscreteDistribution<TValue> {}
+public interface IDiceNumber<TValue> : IDiscreteDistribution<TValue> {}

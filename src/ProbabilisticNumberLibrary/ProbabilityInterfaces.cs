@@ -3,11 +3,13 @@ using System.Reflection.Metadata;
 
 namespace ProbabilisticNumberLibrary;
 
-public interface ProbabilityDistribution<T>
+public interface IProbabilityDistribution<T>
 {
     public T Sample();
+
+    public Dictionary<T, double> ToDictionary();
 }
 
-public interface DiscreteDistribution<T> : ProbabilityDistribution<T> { }
+public interface IDiscreteDistribution<T> : IProbabilityDistribution<T> { }
 
-public interface UniformDistribution<T> : ProbabilityDistribution<T> { }
+public interface IUniformDistribution<T> : IProbabilityDistribution<T> { }
