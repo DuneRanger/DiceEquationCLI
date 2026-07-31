@@ -8,6 +8,7 @@ public interface IProbabilityDistribution<T>
     public T Sample();
 
     public Dictionary<T, double> ToDictionary();
+    public string ToFormattedString(int indentLevel = 0);
 }
 
 public interface IDiscreteDistribution<T> : IProbabilityDistribution<T> { }

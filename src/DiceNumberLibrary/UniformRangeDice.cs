@@ -43,4 +43,9 @@ public class UniformRangeDice : IDiceNumber<long>
         for (int i = 0; i < _rollCount; i++) sumDist += baseDist;
         return sumDist;
     }
+
+    public string ToFormattedString(int indentLevel = 0)
+    {
+        return ToDiscreteDistribution().ToFormattedString(indentLevel);
+    }
 }
