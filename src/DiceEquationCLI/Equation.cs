@@ -10,4 +10,7 @@ public class Equation
     private IDiscreteDistribution<double> _distribution;
     
     public void SetName(string name) => Name = name;
+    public double Evaluate() => _distribution.Sample();
+    public IDiscreteDistribution<double> GetDistribution() => _distribution;
+    public override string ToString() => _equation;
 }
