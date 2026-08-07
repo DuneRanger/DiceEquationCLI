@@ -1,38 +1,30 @@
 ﻿namespace DiceEquationCLI;
-public interface IOperator { }
+public interface IOperatorNode { }
 
-public abstract class BinaryOperator : BinaryNode, IOperator
-{
-    public BinaryOperator(Node left, Node right) : base(left, right) { }
-}
+public abstract class BinaryOperatorNode : BinaryNode, IOperatorNode { }
 
-public class Addition : BinaryOperator
+public class AdditionNode : BinaryOperatorNode
 {
-    public Addition(Node left, Node right) : base(left, right) { }
     public override double Evaluate() => Left.Evaluate() + Right.Evaluate();
 }
 
-public class Subtraction : BinaryOperator
+public class SubtractionNode : BinaryOperatorNode
 {
-    public Subtraction(Node left, Node right) : base(left, right) { }
     public override double Evaluate() => Left.Evaluate() - Right.Evaluate();
 }
 
-public class Multiplication : BinaryOperator
+public class MultiplicationNode : BinaryOperatorNode
 {
-    public Multiplication(Node left, Node right) : base(left, right) { }
     public override double Evaluate() => Left.Evaluate() * Right.Evaluate();
 }
 
-public class Division : BinaryOperator
+public class DivisionNode : BinaryOperatorNode
 {
-    public Division(Node left, Node right) : base(left, right) { }
     public override double Evaluate() => Left.Evaluate() / Right.Evaluate();
 }
 
-public class DiceConstruction : BinaryOperator
+public class DiceConstructionNode : BinaryOperatorNode
 {
-    public DiceConstruction(Node left, Node right) : base(left, right) { }
 
     public override double Evaluate()
     {

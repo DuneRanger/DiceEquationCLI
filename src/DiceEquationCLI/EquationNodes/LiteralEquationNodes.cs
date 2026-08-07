@@ -1,12 +1,12 @@
 ﻿namespace DiceEquationCLI;
-public interface INumberLiteral { }
+public interface INumberLiteralNode { }
 
-public class Integer(long Value) : ValueNode, INumberLiteral
+public class IntegerNode(long Value) : ValueNode, INumberLiteralNode
 {
     public override double Evaluate() => Value;
 }
 
-public class Double(double Value) : ValueNode, INumberLiteral
+public class DoubleNode(double Value) : ValueNode, INumberLiteralNode
 {
     public override double Evaluate() => Value;
 }
