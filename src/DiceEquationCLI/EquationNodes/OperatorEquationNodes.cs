@@ -2,6 +2,7 @@
 public interface IOperatorNode { }
 
 public abstract class BinaryOperatorNode : BinaryNode, IOperatorNode { }
+public abstract class UnaryOperatorNode : UnaryNode, IOperatorNode { }
 
 public class AdditionNode : BinaryOperatorNode
 {
@@ -30,4 +31,9 @@ public class DiceConstructionNode : BinaryOperatorNode
     {
         throw new NotImplementedException();
     }
+}
+
+public class NegationNode : UnaryOperatorNode
+{
+	public override double Evaluate() => -Child.Evaluate();
 }

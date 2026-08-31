@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 namespace ProbabilisticNumberLibrary;
 
 public interface IProbabilityDistribution<T>
+    where T : notnull
 {
     public T Sample();
 
@@ -11,6 +12,6 @@ public interface IProbabilityDistribution<T>
     public string ToFormattedString(int indentLevel = 0);
 }
 
-public interface IDiscreteDistribution<T> : IProbabilityDistribution<T> { }
+public interface IDiscreteDistribution<T> : IProbabilityDistribution<T> where T : notnull { }
 
-public interface IUniformDistribution<T> : IProbabilityDistribution<T> { }
+public interface IUniformDistribution<T> : IProbabilityDistribution<T> where T : notnull { }
