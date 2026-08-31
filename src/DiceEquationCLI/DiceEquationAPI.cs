@@ -24,8 +24,8 @@ public class DiceEquationAPI
         _commands.Add("help", PrintHelp);
         _commands.Add("exit", ExitProgram);
         _commands.Add("save", SaveEquation);
-        _commands.Add("delete", DeleteEquation);
-        _commands.Add("evaluate", EvaluateEquation);
+        _commands.Add("del", DeleteEquation);
+        _commands.Add("eval", EvaluateEquation);
         _commands.Add("show", ShowEquationString);
         _commands.Add("prob", ShowEquationDistribution);
         _commands.Add("export", ExportEquations);
@@ -45,11 +45,11 @@ public class DiceEquationAPI
                                              If the identifier already exists, the expression is overwritten
                                              Spaces in the expression and around the '=' will be ignored
                                          """);
-        _commandHelpMessages.Add("delete", """
+        _commandHelpMessages.Add("del", """
                                            del all|[identifier]
                                                Deletes a saved expression with the given identifier
                                            """);
-        _commandHelpMessages.Add("evaluate", """
+        _commandHelpMessages.Add("eval", """
                                              eval all|[identifier]
                                                  Evaluates and prints the result of the expression with the given identifier
                                                  The first evaluation may take longer, due to optimizing the expression
@@ -238,7 +238,7 @@ public class DiceEquationAPI
         AssertArgCount(args, 1);
         if (!File.Exists(args[0])) throw new ArgumentException("File does not exist: " + args[0]);
         var fileHandler = new StreamReader(args[0]);
-        string line;
+        string? line;
         while ((line = fileHandler.ReadLine()) != null)
         {
             line = line.Trim();
