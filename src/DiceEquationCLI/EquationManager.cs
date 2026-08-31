@@ -3,11 +3,15 @@
 public class EquationManager
 {
     private Dictionary<string, Equation> _equations = new();
+    private EquationTreeParser parser = new();
     
     public void AddEquation(string name, string equation)
     {
-        var equationObj = EquationParser.Parse(equation);
-        equationObj.SetName(name);
+        var equationObj = new Equation(equation);
+        var equationTreeRoot = parser.ConstructTree(equation);
+
+        equationObj.SetEquationTree(equationTreeRoot);
+		equationObj.SetName(name);
         _equations.Add(name, equationObj);
     }
 
