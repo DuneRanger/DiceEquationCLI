@@ -13,7 +13,6 @@ public class UniformRangeDice : IDiceNumber<long>
     public UniformRangeDice(long min, long max, int rollCount = 1)
     {
         if (min > max) throw new ArgumentException("Min must be less than or equal to max");
-        if (min < 0) throw new ArgumentException("Min must be greater or equal to 0");
         if (rollCount < 0) throw new ArgumentException("Roll count must be greater or equal to 0");
         
         _rollCount = rollCount;
