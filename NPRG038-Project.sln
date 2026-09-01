@@ -1,10 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.12023.21
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProbabilisticNumberLibrary", "src\ProbabilisticNumberLibrary\ProbabilisticNumberLibrary.csproj", "{4D8FEADC-B5F7-4D11-A1EA-802BC7BED58D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiceNumberLibrary", "src\DiceNumberLibrary\DiceNumberLibrary.csproj", "{AFEF6546-F8D3-4B67-8047-073DE0CB88B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiceEquationCLI", "src\DiceEquationCLI\DiceEquationCLI.csproj", "{FD231359-A1EA-4B2B-B314-7DD13456C947}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryTests", "src\LibraryTests\LibraryTests.csproj", "{6AEBA0B6-3EB4-7C1C-252F-7C2E50D3C105}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +29,15 @@ Global
 		{FD231359-A1EA-4B2B-B314-7DD13456C947}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD231359-A1EA-4B2B-B314-7DD13456C947}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD231359-A1EA-4B2B-B314-7DD13456C947}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AEBA0B6-3EB4-7C1C-252F-7C2E50D3C105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AEBA0B6-3EB4-7C1C-252F-7C2E50D3C105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AEBA0B6-3EB4-7C1C-252F-7C2E50D3C105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AEBA0B6-3EB4-7C1C-252F-7C2E50D3C105}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {383A1021-B1A9-48DC-8DB4-D501CFD51EB2}
 	EndGlobalSection
 EndGlobal
