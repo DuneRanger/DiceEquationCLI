@@ -10,6 +10,7 @@ namespace LibraryTests
 {
 	public class DiceNumberTests
 	{
+		// ========== Helper Assert Functions ==========
 		private void AssertDistributionEquals<T>(IDiscreteDistribution<T> expected, IDiscreteDistribution<T> actual, double tolerance = 1e-10)
 			where T : notnull
 		{
