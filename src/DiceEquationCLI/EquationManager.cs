@@ -7,10 +7,11 @@ public class EquationManager
     
     public void AddEquation(string name, string equation)
     {
-        var equationObj = new Equation(equation);
-        var equationTreeRoot = parser.ConstructTree(equation);
+        if (HasEquation(name)) throw new ArgumentException("Equation with this name already exists: " + name);
+		var equationObj = new Equation(equation);
+        //var equationTreeRoot = parser.ConstructTree(equation);
 
-        equationObj.SetEquationTree(equationTreeRoot);
+        //equationObj.SetEquationTree(equationTreeRoot);
 		equationObj.SetName(name);
         _equations.Add(name, equationObj);
     }
@@ -22,14 +23,14 @@ public class EquationManager
     
     public Equation GetEquation(string name)
     {
-        _equations.TryGetValue(name, out Equation? equation);
-        if (equation == null) throw new ArgumentException("No such equation: " + name);
-        return equation;
+        _equations.TryGetValue(name, out Equation? equationObj);
+        if (equationObj == null) throw new ArgumentException("Equation \"" + name + "\" does not exist.");
+        return equationObj;
     }
     
     public void DeleteEquation(string name)
     {
-        if (!_equations.ContainsKey(name)) throw new ArgumentException("No such equation: " + name);
+        if (!_equations.ContainsKey(name)) throw new ArgumentException("Equation \"" + name + "\" does not exist.");
         _equations.Remove(name);
     }
 
