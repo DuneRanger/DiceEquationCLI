@@ -84,7 +84,7 @@ public class DiceEquationAPI
         }
     }
 
-    private void AssertValidIdentifier(string identifier)
+    public void AssertValidIdentifier(string identifier)
     {
         bool isValid = true;
         foreach (char c in identifier)
@@ -154,11 +154,13 @@ public class DiceEquationAPI
     {
         string fullString = String.Join("", args);
         var nameExpression = fullString.Split('=');
-        string name = nameExpression[0].Trim();
-        string expression = nameExpression[1].Trim();
+        string name = nameExpression[0];
+        string expression = nameExpression[1];
         AssertValidIdentifier(name);
-        throw new NotImplementedException();
-    }
+
+        _equationManager.AddEquation(name, expression);
+        _outputWriter.WriteLine($"Equation {name} saved.");
+	}
 
     public void DeleteEquation(string[] args)
     {
@@ -166,12 +168,14 @@ public class DiceEquationAPI
         if (args[0] == "all")
         {
             _equationManager.ClearEquations();
-        }
+            _outputWriter.WriteLine("All equations deleted.");
+		}
         else
         {
             AssertValidIdentifier(args[0]);
             _equationManager.DeleteEquation(args[0]);
-        }
+			_outputWriter.WriteLine($"Equation {args[0]} deleted.");
+		}
     }
 
     public void EvaluateEquation(string[] args)
@@ -226,12 +230,16 @@ public class DiceEquationAPI
         if (File.Exists(args[0])) _outputWriter.WriteLine($"Warning: {args[0]} already exists. Overwriting Contents.");
         else File.Create(args[0]);
         var fileHandler = new StreamWriter(args[0]);
-        foreach (var equation in _equationManager.EnumerateEquations())
+        _outputWriter.Write($"Exported ");
+		foreach (var kvp in _equationManager.EnumerateEquations())
         {
-            fileHandler.WriteLine(equation.Value.ToString());
-        }
+            var eq = kvp.Value;
+            fileHandler.WriteLine(eq.Name + " = " + eq.ToString());
+            _outputWriter.Write($"'{eq.Name}', ");
+		}
         fileHandler.Close();
-    }
+        _outputWriter.WriteLine("to " + args[0]);
+	}
 
     public void ImportEquations(string[] args)
     {
