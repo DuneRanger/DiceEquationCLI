@@ -21,7 +21,13 @@ public class MultiplicationNode : BinaryOperatorNode
 
 public class DivisionNode : BinaryOperatorNode
 {
-    public override double Evaluate() => Left.Evaluate() / Right.Evaluate();
+    public override double Evaluate() {
+        if (Right.Evaluate() == 0)
+        {
+            throw new DivideByZeroException("Division by zero is not allowed.");
+        }
+        return Left.Evaluate() / Right.Evaluate();
+    }
 }
 
 public class DiceConstructionNode : BinaryOperatorNode
@@ -35,5 +41,5 @@ public class DiceConstructionNode : BinaryOperatorNode
 
 public class NegationNode : UnaryOperatorNode
 {
-	public override double Evaluate() => -Child.Evaluate();
+    public override double Evaluate() => -Child.Evaluate();
 }
