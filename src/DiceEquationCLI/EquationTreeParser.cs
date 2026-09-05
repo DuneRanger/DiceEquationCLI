@@ -2,6 +2,10 @@
 using System.Runtime.Intrinsics.X86;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("DiceEquationCLITests")]
+
 namespace DiceEquationCLI;
 
 public class EquationOperator
@@ -60,33 +64,46 @@ public class EquationTreeParser
         return $"{baseText}\n{underline}";
     }
 
-    private string[] EquationToTokens(string equation)
+    internal string[] EquationToTokens(string equation)
     {
         List<string> tokens = new();
-        var operators = OperatorSymbols;
+        var operators = OperatorSymbols.ToList();
+        operators.Add('(');
+        operators.Add(')');
 
-        int lastIndex = 0;
         string token = "";
         for (int i = 0; i < equation.Length; i++)
         {
             if (char.IsWhiteSpace(equation[i]))
             {
-                if (i > lastIndex) token += equation.Substring(lastIndex, i - lastIndex);
-                while (char.IsWhiteSpace(equation[i])) i++;
-                lastIndex = i + 1;
+				if (token != "")
+				{
+					tokens.Add(token);
+					token = "";
+				}
+                while (i < equation.Length && char.IsWhiteSpace(equation[i])) i++;
+				if (i >= equation.Length) break;
             }
-
             if (operators.Contains(equation[i]))
             {
-                tokens.Add(token + equation.Substring(lastIndex, i - lastIndex));
-                tokens.Add(equation[i].ToString());
-            }
-        }
-        
+				if (token != "")
+				{
+					tokens.Add(token);
+					token = "";
+				}
+				tokens.Add(equation[i].ToString());
+			}
+			else
+			{
+				token += equation[i];
+			}
+		}
+		if (token != "") tokens.Add(token);
+
         return tokens.ToArray();
     }
 
-	private string[] InfixToPostfix(string[] tokens)
+	internal string[] InfixToPostfix(string[] tokens)
 	{
 		Stack<string> operatorStack = new Stack<string>();
 		List<string> postfix = new List<string>();
@@ -125,8 +142,7 @@ public class EquationTreeParser
 
 				if (!isUnary && !_binaryOperator.ContainsKey(op))
 				{
-					string opType = expectUnary ? "unary" : "binary";
-					throw new ArgumentException($"Invalid or unsupported {opType} operator: {op}");
+					throw new ArgumentException($"Invalid or unsupported operator: {op}");
 				}
 
 				EquationOperator eqOp = isUnary ? _unaryOperator[op] : _binaryOperator[op];
@@ -142,7 +158,7 @@ public class EquationTreeParser
 					char topOp = topIsUnary ? top[1] : top[0];
 					EquationOperator topEqOp = topIsUnary ? _unaryOperator[topOp] : _binaryOperator[topOp];
 
-					if (topEqOp.Priority >= eqOp.Priority)
+					if (topEqOp.Priority > eqOp.Priority || (topEqOp.Priority == eqOp.Priority && !isUnary))
 					{
 						postfix.Add(operatorStack.Pop());
 					}
@@ -167,12 +183,14 @@ public class EquationTreeParser
 				throw new ArgumentException("Mismatched parentheses: missing closing parenthesis.");
 			postfix.Add(op);
 		}
+
 		return postfix.ToArray();
 	}
 
 	public Node ConstructTree(string equation)
 	{
 		string[] tokens = EquationToTokens(equation);
+		if (tokens.Length == 0) throw new ArgumentException("Equation is empty or contains only whitespace.");
 		string[] postfix = InfixToPostfix(tokens);
 
 		Stack<Node> nodeStack = new Stack<Node>();
@@ -208,7 +226,7 @@ public class EquationTreeParser
 					Node right = nodeStack.Pop();
 					Node left = nodeStack.Pop();
 
-					BinaryOperatorNode operatorNode = right as BinaryOperatorNode;
+					BinaryOperatorNode operatorNode = actualOpNode as BinaryOperatorNode;
 					operatorNode.AddChildren(left, right);
 				}
 
@@ -216,10 +234,8 @@ public class EquationTreeParser
 			}
 		}
 
-		if (nodeStack.Count != 1)
-			throw new ArgumentException("Invalid equation format: Too many operands or missing structural operators.");
+		if (nodeStack.Count != 1) throw new ArgumentException("Invalid equation format: Too many operands or missing operators.");
 
 		return nodeStack.Pop();
 	}
 }
-
