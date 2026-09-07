@@ -47,15 +47,20 @@ public class DiceSimulationNode : BinaryOperatorNode
 			throw new ArgumentException("Invalid dice roll count: Must be a non-negative integer.");
 		}
 
-        if (rightValue < 1 || Math.Round(rightValue) != rightValue)
+        if (rightValue < 0 || Math.Round(rightValue) != rightValue)
 		{
 			throw new ArgumentException("Invalid dice sides: Must be a positive integer.");
 		}
+        if (rightValue >= Int64.MaxValue) throw new ArgumentException($"Invalid dice sides: dice cannot have more than {Int64.MaxValue - 1} sides");
+        if (rightValue == 0) return 0;
 
         double result = 0;
         for (int i = 0; i < leftValue; i++)
         {
-            result += rng.NextInt64(1, (long)rightValue + 1);
+            checked
+            {
+                result += rng.NextInt64(1, (long)rightValue + 1);
+            }
 		}
         return result;
     }
