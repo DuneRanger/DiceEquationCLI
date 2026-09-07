@@ -9,10 +9,10 @@ public class EquationManager
     {
         if (HasEquation(name)) throw new ArgumentException("Equation with this name already exists: " + name);
 		var equationObj = new Equation(equation);
-        //var equationTreeRoot = parser.ConstructTree(equation);
+        var equationTreeRoot = parser.ConstructTree(equation);
 
-        //equationObj.SetEquationTree(equationTreeRoot);
-		equationObj.SetName(name);
+        equationObj.SetEquationTree(equationTreeRoot);
+        equationObj.SetName(name);
         _equations.Add(name, equationObj);
     }
 
