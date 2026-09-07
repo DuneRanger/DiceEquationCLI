@@ -47,11 +47,10 @@ namespace DiceEquationCLITests
 		[Fact]
 		public void AddEquation_ComplexEquation()
 		{
-			// Should test a somewhat complex equation (Just to make sure everything is passed to the parser properly)
-			// (and the parser should have its own tests for this stuff)
 			var manager = new EquationManager();
 			manager.AddEquation("complex", "2d6 + 3 * (1d4 - 1)");
-			throw new NotImplementedException();
+
+			Assert.True(manager.HasEquation("complex"));
 		}
 
 		// ========== HasEquation Tests ==========

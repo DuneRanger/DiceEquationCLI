@@ -201,13 +201,13 @@ namespace DiceEquationCLITests
 			api.SaveEquation(new[] { "test3", "=1+1" });
 			api.SaveEquation(new[] { "test4", "=", "1", "+", "1" });
 
-			List<string> longEq = ["tempName", "1"];
+			List<string> longEq = ["tempName", "=", "1"];
 			var baseName = "longTest";
 
-			for (int i = 0;i < longEq.Count;i++) {
+			for (int i = 0; i < 5; i++) {
 				longEq.Add("+");
 				longEq.Add("1");
-				longEq[0] = baseName + i;
+				longEq[0] = $"{baseName}{i}";
 				api.SaveEquation(longEq.ToArray());
 			}
 		}
