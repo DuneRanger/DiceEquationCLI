@@ -290,13 +290,13 @@ namespace DiceEquationCLITests
 		}
 
 		[Fact]
-		public void ConstructTree_DiceConstruction()
+		public void ConstructTree_DiceSimulation()
 		{
 			var parser = new EquationTreeParser();
 			var tree = parser.ConstructTree("2d6");
 
 			Assert.NotNull(tree);
-			Assert.True(tree is DiceConstructionNode);
+			Assert.True(tree is DiceSimulationNode);
 		}
 
 		[Fact]

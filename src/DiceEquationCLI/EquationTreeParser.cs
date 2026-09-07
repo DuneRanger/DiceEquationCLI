@@ -52,7 +52,7 @@ public class EquationTreeParser
     public EquationTreeParser()
     {
         AddBaseOperands();
-        AddBinaryOperand('d', 10, () => new DiceConstructionNode());
+        AddBinaryOperand('d', 10, () => new DiceSimulationNode());
     }
     
     private static string PrettyFormatParsingError(string equation, int underlineStart, int underlineEnd)

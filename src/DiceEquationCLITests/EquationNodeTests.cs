@@ -195,6 +195,48 @@ namespace DiceEquationCLITests
 			Assert.Equal(expected, node.Evaluate());
 		}
 
+		// ========== Helper Functions for Custom Operator Node Tests ==========
+
+		public bool DiceSimulationNode_CoversAllValues(DiceSimulationNode node, int min, int max)
+		{
+			if (max - min > 10000) throw new ArgumentException("Range too large for high-probability testing.");
+
+			bool[] coveredValues = new bool[max - min + 1];
+			int coveredCount = 0;
+			var simulations = (max - min + 1) * 100;
+
+			for (int i = 0; i < simulations; i++)
+			{
+				double result = node.Evaluate();
+				if (result < min || result > max) throw new ArgumentException("Dice Simulation returned a value outside the expected range.");
+				if (!coveredValues[(int)(result - min)]) coveredCount++;
+				coveredValues[(int)(result - min)] = true;
+			}
+
+			// Allow a 0.1% allowed missed values
+			return coveredCount >= (max - min + 1) * 0.999;
+		}
+
 		// ========== Custom Operator Node Evaluation Tests ==========
+
+		[Fact]
+		public void DiceSimulationNode_EvaluateNoChildren_ThrowsException()
+		{
+			var node = new DiceSimulationNode();
+			node.AddLeftChild(new IntegerNode(1));
+			Assert.Throws<NullReferenceException>(() => node.Evaluate());
+		}
+
+		[Theory]
+		[InlineData(1, 6)]
+		[InlineData(2, 6)]
+		[InlineData(4, 6)]
+		[InlineData(100, 6)]
+		public void DiceSimulationNode_Evaluate_ReturnsCorrectValue(int rollCount, int sides)
+		{
+			var node = new DiceSimulationNode();
+			node.AddChildren(new IntegerNode(rollCount), new IntegerNode(sides));
+			DiceSimulationNode_CoversAllValues(node, rollCount, rollCount * sides);
+		}
 	}
 }

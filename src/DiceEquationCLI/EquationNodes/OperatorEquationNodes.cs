@@ -30,12 +30,34 @@ public class DivisionNode : BinaryOperatorNode
     }
 }
 
-public class DiceConstructionNode : BinaryOperatorNode
+public class DiceSimulationNode : BinaryOperatorNode
 {
+    // Note: because the left and right values aren't necessarily deterministic,
+    // we can't create a single UniformRangeDice and use that for Evaluate.
 
-    public override double Evaluate()
+    Random rng= new Random();
+
+	public override double Evaluate()
     {
-        throw new NotImplementedException();
+        double leftValue = Left.Evaluate();
+        double rightValue = Right.Evaluate();
+
+        if (leftValue < 0 || Math.Round(leftValue) != leftValue)
+		{
+			throw new ArgumentException("Invalid dice roll count: Must be a non-negative integer.");
+		}
+
+        if (rightValue < 1 || Math.Round(rightValue) != rightValue)
+		{
+			throw new ArgumentException("Invalid dice sides: Must be a positive integer.");
+		}
+
+        double result = 0;
+        for (int i = 0; i < leftValue; i++)
+        {
+            result += rng.NextInt64(1, (long)rightValue + 1);
+		}
+        return result;
     }
 }
 
