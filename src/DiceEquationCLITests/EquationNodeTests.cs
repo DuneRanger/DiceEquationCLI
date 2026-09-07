@@ -228,6 +228,18 @@ namespace DiceEquationCLITests
 		}
 
 		[Theory]
+		[InlineData(1.5, 6)]
+		[InlineData(2, 6.5)]
+		[InlineData(4.5, 6.5)]
+		[InlineData(-1, 6)]
+		public void DiceSimulationNode_InvalidValues_ThrowsException(double left, double right)
+		{
+			var node = new DiceSimulationNode();
+			node.AddChildren(new DoubleNode(left), new DoubleNode(right));
+			Assert.Throws<ArgumentException>(() => node.Evaluate());
+		}
+
+		[Theory]
 		[InlineData(1, 6)]
 		[InlineData(2, 6)]
 		[InlineData(4, 6)]
@@ -237,6 +249,37 @@ namespace DiceEquationCLITests
 			var node = new DiceSimulationNode();
 			node.AddChildren(new IntegerNode(rollCount), new IntegerNode(sides));
 			DiceSimulationNode_CoversAllValues(node, rollCount, rollCount * sides);
+		}
+
+		[Theory]
+		[InlineData(0, 6)]
+		[InlineData(6, 0)]
+		public void DiceSimulationNode_ZeroCausesZero(int rollCount, int sides)
+		{
+			var node = new DiceSimulationNode();
+			node.AddChildren(new IntegerNode(rollCount), new IntegerNode(sides));
+			for (int i = 0; i < 30; i++)
+			{
+				Assert.Equal(0, node.Evaluate());
+			}
+		}
+
+		[Fact]
+		public void DiceSimulationNode_CheckBaseUniformDistribution()
+		{
+			var node = new DiceSimulationNode();
+			node.AddChildren(new IntegerNode(1), new IntegerNode(20));
+			int[] values = new int[20];
+			for (int i = 0; i < 100000; i++)
+			{
+				int result = (int)node.Evaluate();
+				values[result - 1]++;
+			}
+			var expected = 100000 / 20;
+			foreach (int count in values)
+			{
+				Assert.True(count >= expected * 0.8 && count <= expected * 1.2);
+			}
 		}
 	}
 }

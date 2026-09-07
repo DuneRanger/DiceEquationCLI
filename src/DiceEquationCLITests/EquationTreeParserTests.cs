@@ -11,6 +11,36 @@ namespace DiceEquationCLITests
 			return input.ToCharArray().Where(c => !char.IsWhiteSpace(c)).Select(c => c.ToString()).ToArray();
 		}
 
+		public bool ProbabilisticEquation_CoversAllValues(Node root, double[] values)
+		{
+			if (values.Length > 100) throw new ArgumentException("Range too large for high-probability testing.");
+
+			Dictionary<double, bool> coveredValues = new Dictionary<double, bool>();
+			foreach (var value in values) coveredValues[value] = false;
+			int coveredCount = 0;
+			// Experimentally verified that * 1000 is not enough... (2d2)d(2d3)
+			var simulations = values.Length * 10000;
+
+			for (int i = 0; i < simulations; i++)
+			{
+				double result = root.Evaluate();
+				if (coveredValues.TryGetValue(result, out bool isCovered))
+				{
+					coveredValues[result] = true;
+					if (!isCovered) coveredCount++;
+				}
+				else throw new ArgumentException($"Dice Simulation returned a value outside the expected range: {result}");
+			}
+
+			// Allow a 0.1% allowed missed values
+			return coveredCount >= values.Length * 0.999;
+		}
+
+		public void EvaluateMultipleTimes(Node root, int count)
+		{
+			for (int i = 0; i < count; ++i) root.Evaluate();
+		}
+
 		// ========== Operator Registration Tests ==========
 
 		[Fact]
@@ -296,7 +326,7 @@ namespace DiceEquationCLITests
 			var tree = parser.ConstructTree("2d6");
 
 			Assert.NotNull(tree);
-			Assert.True(tree is DiceSimulationNode);
+			Assert.True(ProbabilisticEquation_CoversAllValues(tree, new double[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }));
 		}
 
 		[Fact]
@@ -345,18 +375,40 @@ namespace DiceEquationCLITests
 			Assert.Equal(expected, tree.Evaluate());
 		}
 
-		// ========== Complex Expression Tests ==========
+		// ========== Complex Expression/Scenario Tests ==========
 
 		[Theory]
-		[InlineData("1d6")]
-		public void ConstructTree_ComplexDiceConstruction(string expression)
+		[InlineData("5 + 1d6", new double[] { 6, 7, 8, 9, 10, 11 })]
+		[InlineData("3d2 * 100 - 3d2", new double[] { 297, 296, 295, 294, 397, 396, 395, 394, 497, 496, 495, 494, 597, 596, 595, 594 })]
+		[InlineData("((2 + 3) * 2d4) / (2 + 2) + 5", new double[] { 7.5, 8.75, 10, 11.25, 12.5, 13.75, 15 })]
+		[InlineData("2d3 * 2d3", new double[] { 2*2, 2*3, 2*4, 2*5, 2*6, 3*2, 3*3, 3*4, 3*5, 3*6, 4*2, 4*3, 4*4, 4*5, 4*6, 5*2, 5*3, 5*4, 5*5, 5*6, 6*2, 6*3, 6*4, 6*5, 6*6 })]
+		[InlineData("(2d2)d4", new double[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 })]
+		[InlineData("3d(2d3)", new double[] { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 })]
+		[InlineData("(2d2)d(2d3)", new double[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 })]
+		public void ConstructTree_ComplexDiceSimulation(string expression, double[] expectedValues)
 		{
 			var parser = new EquationTreeParser();
 			var tree = parser.ConstructTree(expression);
 
-			// Writing a probabilistic test will be fun...
-			throw new NotImplementedException();
+			// it took way to long to realise that this is useful (looking at 2d3 * 2d3)
+			expectedValues = expectedValues.Distinct().ToArray();
 
+			Assert.True(ProbabilisticEquation_CoversAllValues(tree, expectedValues));
+		}
+
+		[Theory]
+		[InlineData("(2d2 / 2)d6", 20)]       // Throws because of non-ineger roll count
+		[InlineData("2d(2d2 / 2)", 20)]       // Throws because of non-ineger dice sides
+		[InlineData("(-2)d5", 1)]             // Throws because of negative roll count
+		[InlineData("-2d5", 1)]             // Throws because of negative roll count
+		[InlineData("2d-5", 1)]               // Throws because of negative dice sides
+		[InlineData("2d(-5)", 1)]               // Throws because of negative dice sides
+		public void ConstructTree_ComplexDiceSimulation_ErrorSituations(string expression, int evaluationCount)
+		{
+			var parser = new EquationTreeParser();
+			var tree = parser.ConstructTree(expression);
+
+			Assert.Throws<ArgumentException>(() => EvaluateMultipleTimes(tree, evaluationCount));
 		}
 
 		[Theory]
