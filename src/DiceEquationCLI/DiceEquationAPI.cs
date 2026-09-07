@@ -154,6 +154,8 @@ public class DiceEquationAPI
     {
         string fullString = String.Join("", args);
         var nameExpression = fullString.Split('=');
+        if (nameExpression.Length != 2) throw new ArgumentException("Equation should contain a single '=' between the identifier and equation");
+
         string name = nameExpression[0];
         string expression = nameExpression[1];
         AssertValidIdentifier(name);
