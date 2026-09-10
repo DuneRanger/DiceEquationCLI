@@ -223,7 +223,7 @@ public class DiceEquationAPI
         AssertArgCount(args, 1);
         AssertValidIdentifier(args[0]);
         var equation = _equationManager.GetEquation(args[0]);
-        _outputWriter.WriteLine(equation.GetDistribution().ToFormattedString(indentLevel: 1));
+        _outputWriter.Write(equation.GetDistribution().ToFormattedString(indentLevel: 0));
     }
     
     public void ExportEquations(string[] args)

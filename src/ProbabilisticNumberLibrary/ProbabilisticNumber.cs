@@ -105,8 +105,6 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
 
             str += "%\n";
 		}
-        // remove the last newline
-        str.Remove(str.Length - 1);
         return str;
     }
 
