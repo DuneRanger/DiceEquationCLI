@@ -9,7 +9,16 @@ public class Equation
     private Node? _equationTree;
     private IDiscreteDistribution<double>? _distribution;
 
-    public Equation(string equation)
+    private int GetEquationTreeNodeCount(Node node) => node switch
+    {
+        null => 0,
+        ValueNode _ => 1,
+		UnaryNode unaryNode => 1 + GetEquationTreeNodeCount(unaryNode.Child),
+		BinaryNode binaryNode => 1 + GetEquationTreeNodeCount(binaryNode.Left) + GetEquationTreeNodeCount(binaryNode.Right),
+		_ => throw new InvalidOperationException("Unknown node type")
+	};
+
+	public Equation(string equation)
     {
         _equation = equation;
     }
@@ -23,6 +32,15 @@ public class Equation
         if (_equationTree is not null) return _equationTree.Evaluate();
         throw new InvalidOperationException("No distribution available");
     }
-    public IDiscreteDistribution<double> GetDistribution() => _distribution ?? throw new InvalidOperationException("No distribution available");
+    public IDiscreteDistribution<double> GetDistribution() {
+        if (_distribution is not null) return _distribution;
+        if (_equationTree is not null)
+        {
+            var distribution = _equationTree.GetDistribution();
+            if (GetEquationTreeNodeCount(_equationTree) < 1000) _distribution = distribution;
+			return distribution;
+        }
+        throw new InvalidOperationException("No distribution available");
+    }
     public override string ToString() => _equation;
 }
