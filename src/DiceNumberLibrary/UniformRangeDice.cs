@@ -29,14 +29,12 @@ public class UniformRangeDice : IDiceNumber<long>
 
     public Dictionary<long, double> ToDictionary()
     {
-        var dict = new Dictionary<long, double>();
-        for (long i = _min; i <= _max; i++) dict[i] = 1.0 / (_max - _min + 1);
-        return dict;
-    }
+        return ToDiscreteDistribution().ToDictionary();
+	}
     
     public IDiscreteDistribution<long> ToDiscreteDistribution()
     {
-        var baseDist = ProbabilisticNumber<long>.FromUniformRange(_min, _max);
+        var baseDist = ProbabilisticNumber<long>.FromUniformRange(_min, _max + 1);
         // essentially an empty distribution (additive identity)
         var sumDist = new ProbabilisticNumber<long>([0], [1.0]);
         for (int i = 0; i < _rollCount; i++) sumDist += baseDist;

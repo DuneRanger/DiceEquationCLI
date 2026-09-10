@@ -85,8 +85,7 @@ namespace LibraryTests
 		public void UniformRangeDice_ZeroRolls_ReturnsZero()
 		{
 			var dice = new UniformRangeDice(1, 6, 0);
-			var result = dice.ToDiscreteDistribution();
-			var dict = result.ToDictionary();
+			var dict = dice.ToDictionary();
 
 			Assert.Single(dict);
 			Assert.Equal(1.0, dict[0]);
@@ -96,14 +95,33 @@ namespace LibraryTests
 		public void UniformRangeDice_OneRoll_ReturnsUniformDistribution()
 		{
 			var dice = new UniformRangeDice(1, 6, 1);
-			var result = dice.ToDiscreteDistribution();
-			var dict = result.ToDictionary();
+			var dict = dice.ToDictionary();
 
-			Assert.Equal(5, dict.Count);
+			Assert.Equal(6, dict.Count);
 			foreach (var v in dict.Values)
 			{
-				Assert.Equal(1.0 / 5, v, 10);
+				Assert.Equal(1.0 / 6, v, 10);
 			}
+		}
+
+		[Fact]
+		public void UniformRangeDice_MultipleRolls_CorrectlyAddsRolls()
+		{
+			var dice = new UniformRangeDice(1, 6, 2);
+			var dict = dice.ToDictionary();
+
+			Assert.Equal(11, dict.Count);
+			Assert.Equal(1.0/36, dict[2], 10);
+			Assert.Equal(2.0/36, dict[3], 10);
+			Assert.Equal(3.0/36, dict[4], 10);
+			Assert.Equal(4.0/36, dict[5], 10);
+			Assert.Equal(5.0/36, dict[6], 10);
+			Assert.Equal(6.0/36, dict[7], 10);
+			Assert.Equal(5.0/36, dict[8], 10);
+			Assert.Equal(4.0/36, dict[9], 10);
+			Assert.Equal(3.0/36, dict[10], 10);
+			Assert.Equal(2.0/36, dict[11], 10);
+			Assert.Equal(1.0/36, dict[12], 10);
 		}
 
 		[Fact]
