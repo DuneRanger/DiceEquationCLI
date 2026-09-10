@@ -28,26 +28,6 @@ namespace DiceEquationCLITests
 		}
 	}
 
-	public class TestIncrementingDistribution : IDiscreteDistribution<double>
-	{
-		private int _callCount = 0;
-
-		public double Sample()
-		{
-			return ++_callCount;
-		}
-
-		public Dictionary<double, double> ToDictionary()
-		{
-			return new Dictionary<double, double>();
-		}
-
-		public string ToFormattedString(int indentLevel = 0)
-		{
-			return "TestIncrementingDistribution";
-		}
-	}
-
 	public class EquationObjectTests
 	{
 		// ========== Constructor Tests ==========
@@ -109,7 +89,7 @@ namespace DiceEquationCLITests
 		// ========== Distribution Property Tests ==========
 
 		[Fact]
-		public void Equation_SetDistribution_StoresDistribution()
+		public void Equation_SetDistribution()
 		{
 			var equation = new Equation("1 + 2");
 			var distribution = new TestDistribution(42.0);
@@ -129,7 +109,21 @@ namespace DiceEquationCLITests
 		}
 
 		[Fact]
-		public void Equation_GetDistribution_ThrowsWhenNotSet()
+		public void Equation_GetDistribution_NoDistributionSet_ValidEquation()
+		{
+			var equation = new Equation("1 + 2");
+			var add = new AdditionNode();
+			add.AddChildren(new IntegerNode(1), new IntegerNode(2));
+
+			equation.SetEquationTree(add);
+			var result = equation.GetDistribution();
+			var expected = ProbabilisticNumber<double>.FromUniform(new double[] { 3.0 });
+
+			Assert.Equal(expected.ToDictionary(), result.ToDictionary());
+		}
+
+		[Fact]
+		public void Equation_GetDistribution_ThrowWhenNoEquation()
 		{
 			var equation = new Equation("1 + 2");
 			Assert.Throws<InvalidOperationException>(() => equation.GetDistribution());
@@ -137,8 +131,46 @@ namespace DiceEquationCLITests
 
 		// ========== Evaluate Tests ==========
 
+
 		[Fact]
-		public void Equation_Evaluate_CallsSampleOnDistribution()
+		public void Equation_Evaluate_ThrowWhenNoEquation()
+		{
+			var equation = new Equation("1 + 2");
+			Assert.Throws<InvalidOperationException>(() => equation.Evaluate());
+		}
+
+		[Fact]
+		public void Equation_Evaluate_ValidEquation()
+		{
+			var equation = new Equation("1 + 2");
+			var add = new AdditionNode();
+			add.AddChildren(new IntegerNode(1), new IntegerNode(2));
+
+			equation.SetEquationTree(add);
+			var result = equation.Evaluate();
+
+			Assert.Equal(3.0, result);
+		}
+
+		[Fact]
+		public void Equation_Evaluate_ValidDistributionAndEquation()
+		{
+			var equation = new Equation("1 + 2");
+
+			var add = new AdditionNode();
+			add.AddChildren(new IntegerNode(1), new IntegerNode(2));
+
+			var distribution = new TestDistribution(123.0);
+
+			equation.SetEquationTree(add);
+			equation.SetDistribution(distribution);
+			var result = equation.Evaluate();
+
+			Assert.Equal(123.0, result);
+		}
+
+		[Fact]
+		public void Equation_Evaluate_OnlyValidDistribution()
 		{
 			var equation = new Equation("1 + 2");
 			var distribution = new TestDistribution(123.0);
@@ -147,35 +179,6 @@ namespace DiceEquationCLITests
 			var result = equation.Evaluate();
 
 			Assert.Equal(123.0, result);
-		}
-
-		[Fact]
-		public void Equation_Evaluate_ThrowsWhenDistributionNotSet()
-		{
-			var equation = new Equation("1 + 2");
-			Assert.Throws<InvalidOperationException>(() => equation.Evaluate());
-		}
-
-		[Fact]
-		public void Equation_Evaluate_MultipleCallsReturnSameValue()
-		{
-			var equation = new Equation("1 + 2");
-			var distribution = new TestIncrementingDistribution();
-
-			equation.SetDistribution(distribution);
-			var result1 = equation.Evaluate();
-			var result2 = equation.Evaluate();
-
-			Assert.Equal(1.0, result1);
-			Assert.Equal(2.0, result2);
-		}
-
-		[Fact]
-
-		public void Equation_EvaluateEquationTree()
-		{
-			// Should test that the equation object is capable of evaluating its equation tree, if it doesn't have a distribution
-			throw new NotImplementedException();
 		}
 	}
 }
