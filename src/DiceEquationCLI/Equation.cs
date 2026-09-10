@@ -18,7 +18,11 @@ public class Equation
     public void SetEquationTree(Node equationTreeRoot) => _equationTree = equationTreeRoot;
     public void SetDistribution(IDiscreteDistribution<double> distribution) => _distribution = distribution;
     
-    public double Evaluate() => _distribution?.Sample() ?? throw new InvalidOperationException("No distribution available");
+    public double Evaluate() {
+        if (_distribution is not null) return _distribution.Sample();
+        if (_equationTree is not null) return _equationTree.Evaluate();
+        throw new InvalidOperationException("No distribution available");
+    }
     public IDiscreteDistribution<double> GetDistribution() => _distribution ?? throw new InvalidOperationException("No distribution available");
     public override string ToString() => _equation;
 }
