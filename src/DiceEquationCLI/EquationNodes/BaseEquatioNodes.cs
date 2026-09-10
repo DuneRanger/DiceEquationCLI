@@ -1,8 +1,11 @@
-﻿namespace DiceEquationCLI;
+﻿using ProbabilisticNumberLibrary;
+
+namespace DiceEquationCLI;
 
 public abstract class Node
 {
     public abstract double Evaluate();
+	public abstract ProbabilisticNumber<double> GetDistribution();
 }
 
 public abstract class ValueNode : Node { }

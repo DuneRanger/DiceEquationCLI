@@ -1,4 +1,7 @@
-﻿namespace DiceEquationCLI;
+﻿using ProbabilisticNumberLibrary;
+using DiceNumberLibrary;
+
+namespace DiceEquationCLI;
 public interface IOperatorNode { }
 
 public abstract class BinaryOperatorNode : BinaryNode, IOperatorNode { }
@@ -7,16 +10,19 @@ public abstract class UnaryOperatorNode : UnaryNode, IOperatorNode { }
 public class AdditionNode : BinaryOperatorNode
 {
     public override double Evaluate() => Left.Evaluate() + Right.Evaluate();
+	public override ProbabilisticNumber<double> GetDistribution() => Left.GetDistribution() + Right.GetDistribution();
 }
 
 public class SubtractionNode : BinaryOperatorNode
 {
     public override double Evaluate() => Left.Evaluate() - Right.Evaluate();
+	public override ProbabilisticNumber<double> GetDistribution() => Left.GetDistribution() - Right.GetDistribution();
 }
 
 public class MultiplicationNode : BinaryOperatorNode
 {
     public override double Evaluate() => Left.Evaluate() * Right.Evaluate();
+	public override ProbabilisticNumber<double> GetDistribution() => Left.GetDistribution() * Right.GetDistribution();
 }
 
 public class DivisionNode : BinaryOperatorNode
@@ -27,6 +33,12 @@ public class DivisionNode : BinaryOperatorNode
             throw new DivideByZeroException("Division by zero is not allowed.");
         }
         return Left.Evaluate() / Right.Evaluate();
+    }
+    public override ProbabilisticNumber<double> GetDistribution()
+    {
+        var right = Right.GetDistribution();
+        right.PurgeValues(value => value == 0);
+		return Left.GetDistribution() / right;
     }
 }
 
@@ -64,9 +76,55 @@ public class DiceSimulationNode : BinaryOperatorNode
 		}
         return result;
     }
+    public override ProbabilisticNumber<double> GetDistribution()
+    {
+		var leftDistribution = Left.GetDistribution();
+		var rightDistribution = Right.GetDistribution();
+
+		// Purge invalid values from each distribution (i.e. negative or non-integer values)
+		leftDistribution.PurgeValues(value => value < 0 || Math.Round(value) != value);
+		rightDistribution.PurgeValues(value => value < 0 || Math.Round(value) != value || value >= Int64.MaxValue);
+
+		var distributionDictionary = new Dictionary<double, double>();
+
+		foreach (var leftPair in leftDistribution.ToDictionary())
+		{
+			double leftValue = leftPair.Key;
+			double leftProb = leftPair.Value;
+
+			foreach (var rightPair in rightDistribution.ToDictionary())
+			{
+				double rightValue = rightPair.Key;
+				double rightProb = rightPair.Value;
+
+				var diceDistribution = new UniformRangeDice(1, (long)rightValue, (int)leftValue);
+				foreach (var dicePair in diceDistribution.ToDictionary())
+				{
+					double diceValue = dicePair.Key;
+					double diceProb = dicePair.Value;
+					double combinedProb = leftProb * rightProb * diceProb;
+					if (distributionDictionary.ContainsKey(diceValue))
+					{
+						distributionDictionary[diceValue] += combinedProb;
+					}
+					else
+					{
+						distributionDictionary[diceValue] = combinedProb;
+					}
+				}
+			}
+		}
+		return ProbabilisticNumber<double>.FromDictionary(distributionDictionary);
+	}
 }
 
 public class NegationNode : UnaryOperatorNode
 {
     public override double Evaluate() => -Child.Evaluate();
+	public override ProbabilisticNumber<double> GetDistribution()
+    {
+		var distribution = Child.GetDistribution();
+		distribution.ModifyValues(value => -value);
+		return distribution;
+	}
 }
