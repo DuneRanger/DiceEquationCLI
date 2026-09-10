@@ -287,7 +287,7 @@ namespace DiceEquationCLITests
 			api.EvaluateEquation(new[] { "test" });
 
 			var result = output.ToString();
-			Assert.Contains(result, "2");
+			Assert.Contains("2", result);
 		}
 
 		[Fact]
@@ -818,6 +818,7 @@ namespace DiceEquationCLITests
 		public void Run_ExportCommand()
 		{
 			var tempFile = Path.Combine(Path.GetTempPath(), "dice_test_" + Guid.NewGuid() + ".txt");
+			File.Create(tempFile).Close();
 
 			var input = new StringReader("save test=1+1\nexport " + tempFile + "\nexit\n");
 			var output = new StringWriter();
