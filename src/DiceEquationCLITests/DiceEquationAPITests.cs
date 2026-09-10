@@ -159,11 +159,14 @@ namespace DiceEquationCLITests
 			api.SaveEquation(new[] { "test=1+1" });
 		}
 
-		[Fact]
-		public void EmptyTestToMakeSureIRemeberToAddTests()
+		[Theory]
+		[InlineData("test=1+1*2-3/4")]
+		[InlineData("test=(1+1)*2-3d(4*2)")]
+		[InlineData("test=(4-2)d6*8/3+(4d6)")]
+		public void SaveEquation_ComplexEquations(string equation)
 		{
 			var (api, input, output) = GetNewApiInstance();
-			throw new NotImplementedException();
+			api.SaveEquation(new[] { equation });
 		}
 
 		[Fact]
