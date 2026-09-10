@@ -1,4 +1,5 @@
 ﻿using DiceEquationCLI;
+using ProbabilisticNumberLibrary;
 
 namespace DiceEquationCLITests
 {
@@ -8,11 +9,19 @@ namespace DiceEquationCLITests
 		{
 			throw new NotImplementedException();
 		}
+		public override ProbabilisticNumber<double> GetDistribution()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	public class TestBinaryNode : BinaryNode
 	{
 		public override double Evaluate()
+		{
+			throw new NotImplementedException();
+		}
+		public override ProbabilisticNumber<double> GetDistribution()
 		{
 			throw new NotImplementedException();
 		}
