@@ -82,7 +82,7 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
             dict[val] = prob + _probs[i];
             errorProb -= _probs[i];
         }
-        if (errorProb > 0) dict["error"] = errorProb;
+        //if (errorProb > 1e-10) dict["error"] = errorProb;
         return dict;
     }
 
@@ -91,11 +91,22 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
         var dict = ToDictionaryWithError();
         var sortedKeys = dict.Keys.OrderBy(key => dict[key]);
         string str = "";
-        foreach (var key in sortedKeys)
+        int longestKeyLength = sortedKeys.Max(key => key.Length);
+		foreach (var key in sortedKeys)
         {
             for (int i = 0; i < indentLevel; ++i) str += "\t";
-            str += key + ": " + dict[key] + "\n";
-        }
+
+            if (longestKeyLength < 5) str += $"{key,-4}: ";
+            else str += $"{key,-10}: ";
+
+            var prob = dict[key];
+            if (prob < 0.00001) str += $"{prob * 100:g2}";
+			else str += $"{prob * 100:F2}";
+
+            str += "%\n";
+		}
+        // remove the last newline
+        str.Remove(str.Length - 1);
         return str;
     }
 
