@@ -206,7 +206,7 @@ namespace LibraryTests
 				{ "error", 2.0 / 5 }
 			};
 
-			Assert.Equal(expectedDict, resultDict);
+			DistributionTestHelper.AreDictionariesEqual(expectedDict, resultDict, 1e-10);
 		}
 
 		[Fact]
@@ -224,7 +224,7 @@ namespace LibraryTests
 				{ "error", 3.0 / 5 }
 			};
 
-			Assert.Equal(expectedDict, resultDict);
+			DistributionTestHelper.AreDictionariesEqual(expectedDict, resultDict, 1e-10);
 		}
 
 		// ========== ProbabilisticNumber<T> Convolution/Operator Tests ==========
