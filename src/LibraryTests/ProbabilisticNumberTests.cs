@@ -6,20 +6,6 @@ namespace LibraryTests
 {
 	public class ProbabilisticNumberTests
 	{
-		private void AssertDistributionEquals<T>(IDiscreteDistribution<T> expected, IDiscreteDistribution<T> actual, double tolerance = 1e-10)
-			where T : notnull
-		{
-			Assert.True(DistributionTestHelper.AreEqual(expected, actual, tolerance), 
-				"Distributions are not equal");
-		}
-
-		private void AssertDictionaryEquals<T>(Dictionary<T, double> expected, Dictionary<T, double> actual, double tolerance = 1e-10)
-			where T : notnull
-		{
-			Assert.True(DistributionTestHelper.AreDictionariesEqual(expected, actual, tolerance),
-				"Dictionaries are not equal");
-		}
-
 		// ========== ProbabilisticNumber<T> Construction Tests ==========
 
 		[Fact]
@@ -48,7 +34,7 @@ namespace LibraryTests
 			var probFromDict = ProbabilisticNumber<int>.FromDictionary(dict);
 			var probDirect = new ProbabilisticNumber<int>(new int[] { 1, 2 }, new double[] { 0.5, 0.5 });
 
-			AssertDistributionEquals(probFromDict, probDirect);
+			Assert.Equal(probFromDict.ToDictionary(), probDirect.ToDictionary());
 		}
 
 		[Fact]
@@ -202,7 +188,7 @@ namespace LibraryTests
 			var prob = ProbabilisticNumber<int>.FromDictionary(dict);
 
 			var resultDict = prob.ToDictionary();
-			AssertDictionaryEquals(dict, resultDict);
+			Assert.Equal(dict, resultDict);
 		}
 
 		[Fact]
@@ -220,7 +206,7 @@ namespace LibraryTests
 				{ "error", 2.0 / 5 }
 			};
 
-			AssertDictionaryEquals(expectedDict, resultDict);
+			Assert.Equal(expectedDict, resultDict);
 		}
 
 		[Fact]
@@ -238,7 +224,7 @@ namespace LibraryTests
 				{ "error", 3.0 / 5 }
 			};
 
-			AssertDictionaryEquals(expectedDict, resultDict);
+			Assert.Equal(expectedDict, resultDict);
 		}
 
 		// ========== ProbabilisticNumber<T> Convolution/Operator Tests ==========
