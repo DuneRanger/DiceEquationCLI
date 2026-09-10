@@ -230,13 +230,13 @@ public class DiceEquationAPI
     {
         AssertArgCount(args, 1);
         if (File.Exists(args[0])) _outputWriter.WriteLine($"Warning: {args[0]} already exists. Overwriting Contents.");
-        else File.Create(args[0]);
+        else File.Create(args[0]).Close();
         var fileHandler = new StreamWriter(args[0]);
         _outputWriter.Write($"Exported ");
 		foreach (var kvp in _equationManager.EnumerateEquations())
         {
             var eq = kvp.Value;
-            fileHandler.WriteLine(eq.Name + " = " + eq.ToString());
+            fileHandler.WriteLine(eq.Name + "=" + eq.ToString());
             _outputWriter.Write($"'{eq.Name}', ");
 		}
         fileHandler.Close();
