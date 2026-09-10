@@ -89,8 +89,15 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
     public string ToFormattedString(int indentLevel = 0)
     {
         var dict = ToDictionaryWithError();
-        var sortedKeys = dict.Keys.OrderBy(key => dict[key]);
-        string str = "";
+
+        // order keys numerically
+        List<string> sortedKeys = new();
+        if (dict.ContainsKey("error")) sortedKeys.Add("error");
+        sortedKeys.AddRange(dict.Keys.Where(key => key != "error").OrderBy(key => double.Parse(key)));
+
+		// orders by probability (descending)
+		//var sortedKeys = dict.Keys.OrderBy(key => -dict[key]);
+		string str = "";
         int longestKeyLength = sortedKeys.Max(key => key.Length);
 		foreach (var key in sortedKeys)
         {
