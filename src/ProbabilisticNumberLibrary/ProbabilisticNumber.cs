@@ -82,7 +82,7 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
             dict[val] = prob + _probs[i];
             errorProb -= _probs[i];
         }
-        //if (errorProb > 1e-10) dict["error"] = errorProb;
+        if (errorProb > 1e-10) dict["error"] = errorProb;
         return dict;
     }
 
