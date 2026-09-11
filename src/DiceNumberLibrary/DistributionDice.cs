@@ -3,6 +3,10 @@ using ProbabilisticNumberLibrary;
 
 namespace DiceNumberLibrary;
 
+/// <summary>
+/// A dice that samples from a given discrete distribution, with the ability to roll multiple times and sum the results.
+/// </summary>
+/// <typeparam name="T">The type of the values in the distribution.</typeparam>
 public class DistributionDice<T> : IDiceNumber<T>
 where T : INumber<T>
 {

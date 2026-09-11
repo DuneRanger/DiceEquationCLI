@@ -3,6 +3,9 @@ using ProbabilisticNumberLibrary;
 
 namespace DiceNumberLibrary;
 
+/// <summary>
+/// Effectively a wrapper around ProbabilisticNumber.FromUniformRange, but with the ability to roll multiple times be much more memory efficient.
+/// </summary>
 public class UniformRangeDice : IDiceNumber<long>
 {
     private readonly int _rollCount;
