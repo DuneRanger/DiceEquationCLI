@@ -8,8 +8,9 @@ public class Equation
     private string _equation = "";
     private Node? _equationTree;
     private IDiscreteDistribution<double>? _distribution;
+    private bool _evaluateDistribution = false;
 
-    private int GetEquationTreeNodeCount(Node node) => node switch
+	private int GetEquationTreeNodeCount(Node node) => node switch
     {
         null => 0,
         ValueNode _ => 1,
@@ -28,7 +29,7 @@ public class Equation
     public void SetDistribution(IDiscreteDistribution<double> distribution) => _distribution = distribution;
     
     public double Evaluate() {
-        if (_distribution is not null) return _distribution.Sample();
+        if (_distribution is not null && !_evaluateDistribution) return _distribution.Sample();
         if (_equationTree is not null) return _equationTree.Evaluate();
         throw new InvalidOperationException("No distribution available");
     }
@@ -37,7 +38,8 @@ public class Equation
         if (_equationTree is not null)
         {
             var distribution = _equationTree.GetDistribution();
-            if (GetEquationTreeNodeCount(_equationTree) < 1000) _distribution = distribution;
+            _distribution = distribution;
+            if (GetEquationTreeNodeCount(_equationTree) < 1000) _evaluateDistribution = true;
 			return distribution;
         }
         throw new InvalidOperationException("No distribution available");
