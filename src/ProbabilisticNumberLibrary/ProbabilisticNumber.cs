@@ -107,9 +107,10 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
             else str += $"{key,-10}: ";
 
             var prob = dict[key];
-            str += $"{prob * 100:g2}";
+            if (prob < 0.001) str += $"{prob * 100:g2}";
+            else str += $"{prob * 100:f2}";
 
-            str += "%\n";
+			str += "%\n";
 		}
         return str;
     }
