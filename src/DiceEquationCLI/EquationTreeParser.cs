@@ -4,10 +4,15 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 using System.Runtime.CompilerServices;
 
+// So that the tests can access internal methods, for more divisive testing of ConstructTree
 [assembly: InternalsVisibleTo("DiceEquationCLITests")]
 
 namespace DiceEquationCLI;
 
+/// <summary>
+/// Contains the symbol, priority, and a function to create an instance of the operator node for a given operator.
+/// A higher priority value indicates that the operator should be evaluated before operators with lower priority values.
+/// </summary>
 public class EquationOperator
 {
     public char Symbol { get; private set; }
@@ -26,20 +31,43 @@ public class EquationTreeParser
 {
     private Dictionary<char, EquationOperator> _binaryOperator = new();
     private Dictionary<char, EquationOperator> _unaryOperator = new();
-	public char[] OperatorSymbols => _binaryOperator.Keys.ToList().Concat(_unaryOperator.Keys.ToList()).ToArray();
-    
-    public void AddBinaryOperand(char symbol, int priority, Func<IOperatorNode> createOperatorNodeInstance)
+	/// <summary>
+	/// Returns an array of all operator symbols (both binary and unary) that are currently registered in the parser.
+	/// Every symbol in the array is unique, and the order of symbols is not guaranteed.
+	/// </summary>
+	public char[] OperatorSymbols => _binaryOperator.Keys.ToList().Concat(_unaryOperator.Keys.ToList()).Distinct().ToArray();
+
+	/// <summary>
+	/// Adds a new binary operator to the parser with the specified symbol, priority, and a function to create an instance of the corresponding operator node.
+	/// If the symbol already exists, an ArgumentException is thrown.
+	/// </summary>
+	/// <param name="symbol">The symbol representing the operator</param>
+	/// <param name="priority">The priority of the operator (higher values are evaluated first)</param>
+	/// <param name="createOperatorNodeInstance">A function to create an instance of the corresponding operator node</param>
+	/// <exception cref="ArgumentException"></exception>
+	public void AddBinaryOperand(char symbol, int priority, Func<IOperatorNode> createOperatorNodeInstance)
     {
         var operation = new EquationOperator(symbol, priority, createOperatorNodeInstance);
         if (!_binaryOperator.TryAdd(symbol, operation)) throw new ArgumentException("Symbol already exists");
     }
 
+	/// <summary>
+	/// Adds a new unary operator to the parser with the specified symbol, priority, and a function to create an instance of the corresponding operator node.
+	/// If the symbol already exists, an ArgumentException is thrown.
+	/// </summary>
+	/// <param name="symbol">The symbol representing the operator</param>
+	/// <param name="priority">The priority of the operator (higher values are evaluated first)</param>
+	/// <param name="createOperatorNodeInstance">A function to create an instance of the corresponding operator node</param>
+	/// <exception cref="ArgumentException"></exception>
 	public void AddUnaryOperand(char symbol, int priority, Func<IOperatorNode> createOperatorNodeInstance)
 	{
 		var operation = new EquationOperator(symbol, priority, createOperatorNodeInstance);
 		if (!_unaryOperator.TryAdd(symbol, operation)) throw new ArgumentException("Symbol already exists");
 	}
 
+	/// <summary>
+	/// Adds the base set of operands (addition, subtraction, multiplication, division, and negation (unary minus)) to the parser.
+	/// </summary>
 	private void AddBaseOperands()
     {
         AddBinaryOperand('+', 3, () => new AdditionNode());
@@ -49,22 +77,25 @@ public class EquationTreeParser
         AddUnaryOperand('-', 10, () => new NegationNode());
     }
 
-    public EquationTreeParser()
+	/// <summary>
+	/// Constructs a new instance of the EquationTreeParser class and initializes it with the base operands and the dice simulation operator ('d').
+	/// </summary>
+	public EquationTreeParser()
     {
         AddBaseOperands();
         AddBinaryOperand('d', 10, () => new DiceSimulationNode());
     }
-    
-    private static string PrettyFormatParsingError(string equation, int underlineStart, int underlineEnd)
-    {
-        var baseText = $"Error parsing equation: {equation}";
-        var preEquationLength = baseText.Length - equation.Length;
-        var underline = new string(' ', preEquationLength + underlineStart);
-        underline += new string('^', underlineEnd - underlineStart);
-        return $"{baseText}\n{underline}";
-    }
 
-    internal string[] EquationToTokens(string equation)
+	/// <summary>
+	/// Converts an equation string into an array of string tokens.
+	/// A token is defined as a sequence of characters that represents a number, or a symbol representing an operator or a parenthesis.
+	/// <br></br>
+	/// All whitespace characters are ignored.
+	/// Only ordinary parentheses are supported, though their pairing isn't checked.
+	/// </summary>
+	/// <param name="equation">The equation string to convert into tokens</param>
+	/// <returns>An array of string tokens</returns>
+	internal string[] EquationToTokens(string equation)
     {
         List<string> tokens = new();
         var operators = OperatorSymbols.ToList();
@@ -103,6 +134,16 @@ public class EquationTreeParser
         return tokens.ToArray();
     }
 
+	/// <summary>
+	/// Converts an array of string tokens in infix notation to postfix notation.
+	/// If the input tokens contain invalid characters or mismatched parentheses, an ArgumentException is thrown.
+	/// The validity and parity of the operators and operands is not checked.
+	/// <br></br>
+	/// Unary operators will be prefixed with 'u' in the output tokens to distinguish them from binary operators.
+	/// </summary>
+	/// <param name="tokens">An array of string tokens in infix notation</param>
+	/// <returns>An array of string tokens in postfix notation</returns>
+	/// <exception cref="ArgumentException"></exception>
 	internal string[] InfixToPostfix(string[] tokens)
 	{
 		Stack<string> operatorStack = new Stack<string>();
@@ -187,6 +228,15 @@ public class EquationTreeParser
 		return postfix.ToArray();
 	}
 
+	/// <summary>
+	/// Constructs an equation tree from a given equation string.
+	/// If there are any invalid characters, mismatched parentheses, or missing operands for operators, an ArgumentException is thrown.
+	/// If there is a problem with the construction of the operator nodes for a given operator, an InvalidOperationException is thrown.
+	/// </summary>
+	/// <param name="equation">The equation string to parse. Whitespace is ignored.</param>
+	/// <returns>The root node of the constructed equation tree.</returns>
+	/// <exception cref="ArgumentException"></exception>
+	/// <exception cref="InvalidOperationException"></exception>
 	public Node ConstructTree(string equation)
 	{
 		string[] tokens = EquationToTokens(equation);
