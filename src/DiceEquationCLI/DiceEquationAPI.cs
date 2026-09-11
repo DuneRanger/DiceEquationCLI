@@ -68,6 +68,7 @@ public class DiceEquationAPI
         _commandHelpMessages.Add("del", """
                                            del all|[identifier]
                                                Deletes a saved expression with the given identifier
+                                               When deleting all expressions, a confirmation prompt will be shown
                                            """);
         _commandHelpMessages.Add("eval", """
                                              eval all|[identifier]
@@ -85,7 +86,7 @@ public class DiceEquationAPI
         _commandHelpMessages.Add("export", """
                                            export [filename]
                                                Prints all saved expressions in string form to the named file
-                                               Existing file contents are overwritten
+                                               If the file already exists, a confirmation prompt will be shown before overwriting
                                            """);
         _commandHelpMessages.Add("import", """
                                            import [filename]
