@@ -1,5 +1,6 @@
 ﻿using ProbabilisticNumberLibrary;
 using DiceNumberLibrary;
+using System.Collections.Concurrent;
 
 namespace DiceEquationCLI;
 public interface IOperatorNode { }
@@ -78,43 +79,52 @@ public class DiceSimulationNode : BinaryOperatorNode
     }
     public override ProbabilisticNumber<double> GetDistribution()
     {
-		var leftDistribution = Left.GetDistribution();
-		var rightDistribution = Right.GetDistribution();
+		var leftTask = Task.Run(() => Left.GetDistribution());
+		var rightTask = Task.Run(() => Right.GetDistribution());
+
+		var leftDistribution = leftTask.Result;
+		var rightDistribution = rightTask.Result;
 
 		// Purge invalid values from each distribution (i.e. negative or non-integer values)
-		leftDistribution.PurgeValues(value => value < 0 || Math.Round(value) != value);
+		leftDistribution.PurgeValues(value => value < 0 || Math.Round(value) != value || value > Int32.MaxValue);
 		rightDistribution.PurgeValues(value => value < 0 || Math.Round(value) != value || value >= Int64.MaxValue);
 
-		var distributionDictionary = new Dictionary<double, double>();
+		ConcurrentDictionary<double, double> concurrentDistributionDictionary = new();
 
-		foreach (var leftPair in leftDistribution.ToDictionary())
+		var leftPairs = leftDistribution.ToDictionary().ToArray();
+
+		Parallel.ForEach(leftPairs, leftPair =>
 		{
+			Dictionary<double, double> localDict = new();
 			double leftValue = leftPair.Key;
 			double leftProb = leftPair.Value;
-
 			foreach (var rightPair in rightDistribution.ToDictionary())
 			{
 				double rightValue = rightPair.Key;
 				double rightProb = rightPair.Value;
-
-				var diceDistribution = new UniformRangeDice(1, (long)rightValue, (int)leftValue);
+				var diceDistribution = new UniformRangeDice(1, (long)rightValue, (int)leftValue).ToDictionary();
 				foreach (var dicePair in diceDistribution.ToDictionary())
 				{
 					double diceValue = dicePair.Key;
 					double diceProb = dicePair.Value;
 					double combinedProb = leftProb * rightProb * diceProb;
-					if (distributionDictionary.ContainsKey(diceValue))
+					if (localDict.ContainsKey(diceValue))
 					{
-						distributionDictionary[diceValue] += combinedProb;
+						localDict[diceValue] += combinedProb;
 					}
 					else
 					{
-						distributionDictionary[diceValue] = combinedProb;
+						localDict[diceValue] = combinedProb;
 					}
 				}
 			}
-		}
-		return ProbabilisticNumber<double>.FromDictionary(distributionDictionary);
+			foreach (var kvp in localDict)
+			{
+				concurrentDistributionDictionary.AddOrUpdate(kvp.Key, kvp.Value, (key, oldValue) => oldValue + kvp.Value);
+			}
+		});
+
+		return ProbabilisticNumber<double>.FromDictionary(concurrentDistributionDictionary.ToDictionary());
 	}
 }
 
