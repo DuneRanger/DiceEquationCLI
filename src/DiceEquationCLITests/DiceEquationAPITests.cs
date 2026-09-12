@@ -5,9 +5,9 @@ namespace DiceEquationCLITests
 {
 	public class DiceEquationAPITests
 	{
-		Tuple<DiceEquationAPI, StringReader, StringWriter> GetNewApiInstance()
+		Tuple<DiceEquationAPI, StringReader, StringWriter> GetNewApiInstance(string inputText = "")
 		{
-			var input = new StringReader("");
+			var input = new StringReader(inputText);
 			var output = new StringWriter();
 			var api = new DiceEquationAPI(input, output);
 
@@ -124,10 +124,13 @@ namespace DiceEquationCLITests
 		}
 
 		[Fact]
-		public void PrintHelp_OnlyZeroArguments()
+		public void PrintHelp_DoesNotThrowWithArguments()
 		{
 			var (api, input, output) = GetNewApiInstance();
-			Assert.True(CheckExclusiveArgumentCount_IdentifierVersion(0, api.PrintHelp));
+			api.PrintHelp(new string[] { });
+			api.PrintHelp(new string[] { "arg1" });
+			api.PrintHelp(new string[] { "arg1", "arg2" });
+			api.PrintHelp(new string[] { "arg1", "arg2", "arg3", "arg4", "arg5" });
 		}
 
 		// ========== Exit Command Tests ==========
@@ -247,15 +250,27 @@ namespace DiceEquationCLITests
 		}
 
 		[Fact]
-		public void DeleteEquation_DeleteAll()
+		public void DeleteEquation_DeleteAll_WithConfirmation()
 		{
-			var (api, input, output) = GetNewApiInstance();
+			var (api, input, output) = GetNewApiInstance("y\n");
 			api.SaveEquation(new[] { "test=1+1" });
 			api.SaveEquation(new[] { "test2=1+1" });
 
 			api.DeleteEquation(new[] { "all" });
 			Assert.Throws<ArgumentException>(() => api.DeleteEquation(new[] { "test" }));
 			Assert.Throws<ArgumentException>(() => api.DeleteEquation(new[] { "test2" }));
+		}
+
+		[Fact]
+		public void DeleteEquation_DeleteAll_WithoutConfirmation()
+		{
+			var (api, input, output) = GetNewApiInstance("n\n");
+			api.SaveEquation(new[] { "test=1+1" });
+			api.SaveEquation(new[] { "test2=1+1" });
+
+			api.DeleteEquation(new[] { "all" });
+			api.DeleteEquation(new[] { "test" });
+			api.DeleteEquation(new[] { "test2" });
 		}
 
 		[Fact]
@@ -517,9 +532,9 @@ namespace DiceEquationCLITests
 		}
 
 		[Fact]
-		public void ExportEquations_OverwriteFile()
+		public void ExportEquations_OverwriteFile_WithConfirmation()
 		{
-			var (api, input, output) = GetNewApiInstance();
+			var (api, input, output) = GetNewApiInstance("y\n");
 
 			var tempFile = Path.Combine(Path.GetTempPath(), "dice_test_" + Guid.NewGuid() + ".txt");
 			File.WriteAllText(tempFile, "Existing content");
@@ -527,6 +542,19 @@ namespace DiceEquationCLITests
 			api.ExportEquations(new[] { tempFile });
 			var content = File.ReadAllText(tempFile);
 			Assert.DoesNotContain("Existing content", content);
+		}
+
+		[Fact]
+		public void ExportEquations_OverwriteFile_WithoutConfirmation()
+		{
+			var (api, input, output) = GetNewApiInstance("n\n");
+
+			var tempFile = Path.Combine(Path.GetTempPath(), "dice_test_" + Guid.NewGuid() + ".txt");
+			File.WriteAllText(tempFile, "Existing content");
+
+			api.ExportEquations(new[] { tempFile });
+			var content = File.ReadAllText(tempFile);
+			Assert.Contains("Existing content", content);
 		}
 
 		[Fact]
@@ -823,7 +851,7 @@ namespace DiceEquationCLITests
 			var tempFile = Path.Combine(Path.GetTempPath(), "dice_test_" + Guid.NewGuid() + ".txt");
 			File.Create(tempFile).Close();
 
-			var input = new StringReader("save test=1+1\nexport " + tempFile + "\nexit\n");
+			var input = new StringReader("save test=1+1\nexport " + tempFile + "\ny\nexit\n");
 			var output = new StringWriter();
 			var api = new DiceEquationAPI(input, output);
 
