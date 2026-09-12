@@ -25,8 +25,8 @@ public class Equation
     {
         null => 0,
         ValueNode _ => 1,
-		UnaryNode unaryNode => 1 + GetEquationTreeNodeCount(unaryNode.Child),
-		BinaryNode binaryNode => 1 + GetEquationTreeNodeCount(binaryNode.Left) + GetEquationTreeNodeCount(binaryNode.Right),
+		UnaryNode unaryNode => 1 + GetEquationTreeNodeCount(unaryNode.Child!),
+		BinaryNode binaryNode => 1 + GetEquationTreeNodeCount(binaryNode.Left!) + GetEquationTreeNodeCount(binaryNode.Right!),
 		_ => throw new InvalidOperationException("Unknown node type")
 	};
 

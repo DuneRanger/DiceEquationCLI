@@ -267,7 +267,7 @@ public class EquationTreeParser
 					if (nodeStack.Count < 1) throw new ArgumentException($"Missing child node for unary operator '{op}'");
 					Node child = nodeStack.Pop();
 
-					UnaryOperatorNode unaryNode = actualOpNode as UnaryOperatorNode;
+					UnaryOperatorNode unaryNode = (UnaryOperatorNode)actualOpNode;
 					unaryNode.AddChild(child);
 				}
 				else
@@ -276,7 +276,7 @@ public class EquationTreeParser
 					Node right = nodeStack.Pop();
 					Node left = nodeStack.Pop();
 
-					BinaryOperatorNode operatorNode = actualOpNode as BinaryOperatorNode;
+					BinaryOperatorNode operatorNode = (BinaryOperatorNode)actualOpNode;
 					operatorNode.AddChildren(left, right);
 				}
 

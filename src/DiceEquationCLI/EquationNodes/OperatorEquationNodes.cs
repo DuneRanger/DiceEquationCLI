@@ -10,36 +10,36 @@ public abstract class UnaryOperatorNode : UnaryNode, IOperatorNode { }
 
 public class AdditionNode : BinaryOperatorNode
 {
-    public override double Evaluate() => Left.Evaluate() + Right.Evaluate();
-	public override ProbabilisticNumber<double> GetDistribution() => Left.GetDistribution() + Right.GetDistribution();
+    public override double Evaluate() => Left!.Evaluate() + Right!.Evaluate();
+	public override ProbabilisticNumber<double> GetDistribution() => Left!.GetDistribution() + Right!.GetDistribution();
 }
 
 public class SubtractionNode : BinaryOperatorNode
 {
-    public override double Evaluate() => Left.Evaluate() - Right.Evaluate();
-	public override ProbabilisticNumber<double> GetDistribution() => Left.GetDistribution() - Right.GetDistribution();
+    public override double Evaluate() => Left!.Evaluate() - Right!.Evaluate();
+	public override ProbabilisticNumber<double> GetDistribution() => Left!.GetDistribution() - Right!.GetDistribution();
 }
 
 public class MultiplicationNode : BinaryOperatorNode
 {
-    public override double Evaluate() => Left.Evaluate() * Right.Evaluate();
-	public override ProbabilisticNumber<double> GetDistribution() => Left.GetDistribution() * Right.GetDistribution();
+    public override double Evaluate() => Left!.Evaluate() * Right!.Evaluate();
+	public override ProbabilisticNumber<double> GetDistribution() => Left!.GetDistribution() * Right!.GetDistribution();
 }
 
 public class DivisionNode : BinaryOperatorNode
 {
     public override double Evaluate() {
-        if (Right.Evaluate() == 0)
+        if (Right!.Evaluate() == 0)
         {
             throw new DivideByZeroException("Division by zero is not allowed.");
         }
-        return Left.Evaluate() / Right.Evaluate();
+        return Left!.Evaluate() / Right!.Evaluate();
     }
     public override ProbabilisticNumber<double> GetDistribution()
     {
-        var right = Right.GetDistribution();
+        var right = Right!.GetDistribution();
         right.PurgeValues(value => value == 0);
-		return Left.GetDistribution() / right;
+		return Left!.GetDistribution() / right;
     }
 }
 
@@ -52,8 +52,8 @@ public class DiceSimulationNode : BinaryOperatorNode
 
 	public override double Evaluate()
     {
-        double leftValue = Left.Evaluate();
-        double rightValue = Right.Evaluate();
+        double leftValue = Left!.Evaluate();
+        double rightValue = Right!.Evaluate();
 
         if (leftValue < 0 || Math.Round(leftValue) != leftValue)
 		{
@@ -79,8 +79,8 @@ public class DiceSimulationNode : BinaryOperatorNode
     }
     public override ProbabilisticNumber<double> GetDistribution()
     {
-		var leftTask = Task.Run(() => Left.GetDistribution());
-		var rightTask = Task.Run(() => Right.GetDistribution());
+		var leftTask = Task.Run(() => Left!.GetDistribution());
+		var rightTask = Task.Run(() => Right!.GetDistribution());
 
 		var leftDistribution = leftTask.Result;
 		var rightDistribution = rightTask.Result;
@@ -130,10 +130,10 @@ public class DiceSimulationNode : BinaryOperatorNode
 
 public class NegationNode : UnaryOperatorNode
 {
-    public override double Evaluate() => -Child.Evaluate();
+    public override double Evaluate() => -Child!.Evaluate();
 	public override ProbabilisticNumber<double> GetDistribution()
     {
-		var distribution = Child.GetDistribution();
+		var distribution = Child!.GetDistribution();
 		distribution.ModifyValues(value => -value);
 		return distribution;
 	}
