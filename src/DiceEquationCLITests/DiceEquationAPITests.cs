@@ -5,7 +5,7 @@ namespace DiceEquationCLITests
 {
 	public class DiceEquationAPITests
 	{
-		Tuple<DiceEquationAPI, StringReader, StringWriter> GetNewApiInstance(string inputText = "")
+		private Tuple<DiceEquationAPI, StringReader, StringWriter> GetNewApiInstance(string inputText = "")
 		{
 			var input = new StringReader(inputText);
 			var output = new StringWriter();
@@ -14,7 +14,7 @@ namespace DiceEquationCLITests
 			return Tuple.Create(api, input, output);
 		}
 
-		bool CheckExclusiveArgumentCount_IdentifierVersion(int expectedArgCount, Action<string[]> commandAction)
+		private bool CheckExclusiveArgumentCount_IdentifierVersion(int expectedArgCount, Action<string[]> commandAction)
 		{
 			List<string> args = new List<string>();
 			for (int i = 1; i <= 10; i++)
@@ -36,7 +36,7 @@ namespace DiceEquationCLITests
 			return true;
 		}
 
-		bool CheckExclusiveArgumentCount_FilePathVersion(int expectedArgCount, Action<string[]> commandAction)
+		private bool CheckExclusiveArgumentCount_FilePathVersion(int expectedArgCount, Action<string[]> commandAction)
 		{
 			List<string> args = new List<string>();
 			for (int i = 1; i <= 10; i++)

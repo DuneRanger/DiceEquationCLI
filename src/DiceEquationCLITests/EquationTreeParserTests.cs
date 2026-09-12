@@ -6,12 +6,12 @@ namespace DiceEquationCLITests
 	{
 		// ========== Helper Functions ==========
 
-		public string[] stringToCharStringArray_NoWhitespace(string input)
+		private string[] stringToCharStringArray_NoWhitespace(string input)
 		{
 			return input.ToCharArray().Where(c => !char.IsWhiteSpace(c)).Select(c => c.ToString()).ToArray();
 		}
 
-		public bool ProbabilisticEquation_CoversAllValues(Node root, double[] values)
+		private bool ProbabilisticEquation_CoversAllValues(Node root, double[] values)
 		{
 			if (values.Length > 100) throw new ArgumentException("Range too large for high-probability testing.");
 
@@ -36,7 +36,7 @@ namespace DiceEquationCLITests
 			return coveredCount >= values.Length * 0.999;
 		}
 
-		public void EvaluateMultipleTimes(Node root, int count)
+		private void EvaluateMultipleTimes(Node root, int count)
 		{
 			for (int i = 0; i < count; ++i) root.Evaluate();
 		}
