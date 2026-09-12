@@ -168,7 +168,7 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
         {
             for (int i = 0; i < indentLevel; ++i) str += "\t";
 
-            if (longestKeyLength < 5) str += $"{key,-4}: ";
+            if (longestKeyLength < 6) str += $"{key,-5}: ";
             else str += $"{key,-10}: ";
 
             var prob = dict[key];
