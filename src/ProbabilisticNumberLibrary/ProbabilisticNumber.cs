@@ -169,7 +169,8 @@ public class ProbabilisticNumber<T> : IDiscreteDistribution<T>,
             for (int i = 0; i < indentLevel; ++i) str += "\t";
 
             if (longestKeyLength < 6) str += $"{key,-5}: ";
-            else str += $"{key,-10}: ";
+            else if (longestKeyLength < 10) str += $"{key,-10}: ";
+            else str += $"{key,-18}: "; // Equal to the max length of a double in string format
 
             var prob = dict[key];
             if (prob < 0.001) str += $"{prob * 100:g2}";
