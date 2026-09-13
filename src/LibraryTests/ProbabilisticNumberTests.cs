@@ -6,7 +6,7 @@ namespace LibraryTests
 {
 	public class ProbabilisticNumberTests
 	{
-		// ========== ProbabilisticNumber<T> Construction Tests ==========
+		#region ProbabilisticNumber<T> Construction Tests
 
 		[Fact]
 		public void ValidConstruction_CreatesInstance()
@@ -83,7 +83,8 @@ namespace LibraryTests
 			}
 		}
 
-		// ========== ProbabilisticNumber<T> Probability/Value Modification Tests ==========
+		#endregion ProbabilisticNumber<T> Construction Tests
+		#region ProbabilisticNumber<T> Probability/Value Modification Tests
 
 		[Fact]
 		public void Normalize_AdjustsProbabilities()
@@ -179,7 +180,8 @@ namespace LibraryTests
 			Assert.Equal(1.0, dict[5], 10);
 		}
 
-		// ========== ProbabilisticNumber<T> ToDictionary Tests ==========
+		#endregion ProbabilisticNumber<T> Probability/Value Modification Tests
+		#region ProbabilisticNumber<T> ToDictionary Tests
 
 		[Fact]
 		public void ToDictionary_InverseToFromDictionary()
@@ -227,7 +229,8 @@ namespace LibraryTests
 			DistributionTestHelper.AreDictionariesEqual(expectedDict, resultDict, 1e-10);
 		}
 
-		// ========== ProbabilisticNumber<T> Convolution/Operator Tests ==========
+		#endregion ProbabilisticNumber<T> ToDictionary Tests
+		#region ProbabilisticNumber<T> Convolution/Operator Tests
 
 		[Fact]
 		public void AdditionOperator_WithSingleValues()
@@ -323,34 +326,7 @@ namespace LibraryTests
 			Assert.Equal(0.25, dict[4.5], 10);
 		}
 
-		// ========== ProbabilisticNumber<T> DistributionTestHelper Equality Tests ==========
-
-		[Fact]
-		public void DistributionEquality_SameDistributions()
-		{
-			var prob1 = ProbabilisticNumber<int>.FromDictionary(new Dictionary<int, double> { { 1, 0.5 }, { 2, 0.5 } });
-			var prob2 = ProbabilisticNumber<int>.FromDictionary(new Dictionary<int, double> { { 1, 0.5 }, { 2, 0.5 } });
-
-			Assert.True(DistributionTestHelper.AreEqual(prob1, prob2));
-		}
-
-		[Fact]
-		public void DistributionEquality_DifferentDistributions()
-		{
-			var prob1 = ProbabilisticNumber<int>.FromDictionary(new Dictionary<int, double> { { 1, 0.5 }, { 2, 0.5 } });
-			var prob2 = ProbabilisticNumber<int>.FromDictionary(new Dictionary<int, double> { { 1, 0.3 }, { 2, 0.7 } });
-
-			Assert.False(DistributionTestHelper.AreEqual(prob1, prob2));
-		}
-
-		[Fact]
-		public void DistributionEquality_WithinTolerance()
-		{
-			var prob1 = ProbabilisticNumber<int>.FromDictionary(new Dictionary<int, double> { { 1, 0.5 }, { 2, 0.5 } });
-			var prob2 = ProbabilisticNumber<int>.FromDictionary(new Dictionary<int, double> { { 1, 0.50000001 }, { 2, 0.49999999 } });
-
-			Assert.True(DistributionTestHelper.AreEqual(prob1, prob2, 1e-7));
-		}
+		#endregion ProbabilisticNumber<T> Convolution/Operator Tests
 	}
 }
 

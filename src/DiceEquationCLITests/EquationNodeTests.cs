@@ -29,7 +29,7 @@ namespace DiceEquationCLITests
 
 	public class EquationNodeTests
 	{
-		// ========== Literal Node Tests ==========
+		#region Literal Node Tests
 
 		[Fact]
 		public void IntegerLiteralNode_ReturnsCorrectValue()
@@ -47,7 +47,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(42.0, node.Evaluate());
 		}
 
-		// ========== Operator Node Tests ==========
+		#endregion Literal Node Tests
+		#region Operator Node Tests
 
 		[Fact]
 		public void UnaryNode_AddChild()
@@ -86,7 +87,8 @@ namespace DiceEquationCLITests
 			Assert.Throws<InvalidOperationException>(() => node.AddChildren(new IntegerNode(3), new IntegerNode(4)));
 		}
 
-		// ========== Basic Operator Node Evaluation Tests ==========
+		#endregion Operator Node Tests
+		#region Basic Operator Node Evaluation Tests
 
 		[Fact]
 		public void AdditionNode_EvaluateNoChildren_ThrowsException()
@@ -204,7 +206,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(expected, node.Evaluate());
 		}
 
-		// ========== Helper Functions for Custom Operator Node Tests ==========
+		#endregion Basic Operator Node Evaluation Tests
+		#region Helper Functions for Custom Operator Node Tests
 
 		public bool DiceSimulationNode_CoversAllValues(DiceSimulationNode node, int min, int max)
 		{
@@ -226,7 +229,8 @@ namespace DiceEquationCLITests
 			return coveredCount >= (max - min + 1) * 0.999;
 		}
 
-		// ========== Custom Operator Node Evaluation Tests ==========
+		#endregion Helper Functions for Custom Operator Node Tests
+		#region Custom Operator Node Evaluation Tests
 
 		[Fact]
 		public void DiceSimulationNode_EvaluateNoChildren_ThrowsException()
@@ -290,5 +294,7 @@ namespace DiceEquationCLITests
 				Assert.True(count >= expected * 0.8 && count <= expected * 1.2);
 			}
 		}
+
+		#endregion Custom Operator Node Evaluation Tests
 	}
 }

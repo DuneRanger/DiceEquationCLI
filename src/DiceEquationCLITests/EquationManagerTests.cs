@@ -4,7 +4,7 @@ namespace DiceEquationCLITests
 {
 	public class EquationManagerTests
 	{
-		// ========== AddEquation Tests ==========
+		#region AddEquation Tests
 
 		[Fact]
 		public void AddEquation_AddSingle()
@@ -53,7 +53,8 @@ namespace DiceEquationCLITests
 			Assert.True(manager.HasEquation("complex"));
 		}
 
-		// ========== HasEquation Tests ==========
+		#endregion AddEquation Tests
+		#region HasEquation Tests
 
 		[Fact]
 		public void HasEquation_ReturnFalseForNonExistentEquation()
@@ -79,7 +80,8 @@ namespace DiceEquationCLITests
 			Assert.False(manager.HasEquation("myequation"));
 		}
 
-		// ========== GetEquation Tests ==========
+		#endregion HasEquation Tests
+		#region GetEquation Tests
 
 		[Fact]
 		public void GetEquation_ReturnsCorrectEquation()
@@ -135,7 +137,8 @@ namespace DiceEquationCLITests
 			Assert.Equal("Simple", equation.Name);
 		}
 
-		// ========== DeleteEquation Tests ==========
+		#endregion GetEquation Tests
+		#region DeleteEquation Tests
 
 		[Fact]
 		public void DeleteEquation_RemovesEquation()
@@ -193,7 +196,8 @@ namespace DiceEquationCLITests
 			Assert.False(manager.HasEquation("ToDelete"));
 		}
 
-		// ========== EnumerateEquations Tests ==========
+		#endregion DeleteEquation Tests
+		#region EnumerateEquations Tests
 
 		[Fact]
 		public void EnumerateEquations_EmptyManager()
@@ -280,7 +284,8 @@ namespace DiceEquationCLITests
 			}
 		}
 
-		// ========== ClearEquations Tests ==========
+		#endregion EnumerateEquations Tests
+		#region ClearEquations Tests
 
 		[Fact]
 		public void ClearEquations_EmptyManager()
@@ -319,5 +324,7 @@ namespace DiceEquationCLITests
 			Assert.True(manager.HasEquation("eq1"));
 			Assert.Equal("2 + 2", manager.GetEquation("eq1").ToString());
 		}
+
+		#endregion ClearEquations Tests
 	}
 }

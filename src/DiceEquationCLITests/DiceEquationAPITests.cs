@@ -1,5 +1,6 @@
 ﻿using DiceEquationCLI;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace DiceEquationCLITests
 {
@@ -70,7 +71,7 @@ namespace DiceEquationCLITests
 											"_",
 										};
 
-		// ========== Assert Valid Identifier Tests ==========
+		#region Assert Valid Identifier Tests
 
 		[Fact]
 		public void AssertValidIdentifier_ThrowsOnInvalidIdentifiers()
@@ -87,7 +88,8 @@ namespace DiceEquationCLITests
 		}
 
 
-		// ========== Constructor Tests ==========
+		#endregion Assert Valid Identifier Tests
+		#region Constructor Tests
 
 		[Fact]
 		public void Constructor_InitializesWithInputOutput()
@@ -97,7 +99,8 @@ namespace DiceEquationCLITests
 			Assert.NotNull(api);
 		}
 
-		// ========== Help Command Tests ==========
+		#endregion Constructor Tests
+		#region Help Command Tests
 
 		[Fact]
 		public void PrintHelp_PrintsHelpMessage()
@@ -133,7 +136,8 @@ namespace DiceEquationCLITests
 			api.PrintHelp(new string[] { "arg1", "arg2", "arg3", "arg4", "arg5" });
 		}
 
-		// ========== Exit Command Tests ==========
+		#endregion Help Command Tests
+		#region Exit Command Tests
 
 		[Fact]
 		public void ExitProgram_DoesNotThrow()
@@ -153,7 +157,8 @@ namespace DiceEquationCLITests
 			Assert.True(CheckExclusiveArgumentCount_IdentifierVersion(0, api.ExitProgram));
 		}
 
-		// ========== Save Command Tests ==========
+		#endregion Exit Command Tests
+		#region Save Command Tests
 
 		[Fact]
 		public void SaveEquation_SingleEquation()
@@ -218,7 +223,8 @@ namespace DiceEquationCLITests
 			}
 		}
 
-		// ========== Delete Command Tests ==========
+		#endregion Save Command Tests
+		#region Delete Command Tests
 
 		[Fact]
 		public void DeleteEquation_DeleteNonexistent_Throws()
@@ -295,7 +301,8 @@ namespace DiceEquationCLITests
 			}
 		}
 
-		// ========== Evaluate Command Tests ==========
+		#endregion Delete Command Tests
+		#region Evaluate Command Tests
 
 		[Fact]
 		public void EvaluateEquation_EvalBasicEquation()
@@ -371,7 +378,8 @@ namespace DiceEquationCLITests
 			}
 		}
 
-		// ========== Show Equation String Command Tests ==========
+		#endregion Evaluate Command Tests
+		#region Show Equation String Command Tests
 
 		[Fact]
 		public void ShowEquationString_ShowBasicEquation()
@@ -454,7 +462,8 @@ namespace DiceEquationCLITests
 			}
 		}
 
-		// ========== Show Equation Distribution Command Tests ==========
+		#endregion Show Equation String Command Tests
+		#region Show Equation Distribution Command Tests
 
 		[Fact]
 		public void ShowEquationDistribution_ShowBasicEquation_OutputNotChecked()
@@ -498,7 +507,8 @@ namespace DiceEquationCLITests
 			}
 		}
 
-		// ========== Export Command Tests ==========
+		#endregion Show Equation Distribution Command Tests
+		#region Export Command Tests
 
 		[Fact]
 		public void ExportEquations_ThrowsWithInvalidArgumentCount()
@@ -597,7 +607,8 @@ namespace DiceEquationCLITests
 			Assert.Contains("test6=1+6", content);
 		}
 
-		// ========== Import Command Tests ==========
+		#endregion Export Command Tests
+		#region Import Command Tests
 
 		[Fact]
 		public void ImportEquations_ThrowsWhenFileNotExists()
@@ -724,7 +735,8 @@ namespace DiceEquationCLITests
 			Assert.Contains("saved", result);
 		}
 
-		// ========== Run Method Tests ==========
+		#endregion Import Command Tests
+		#region Run Method Tests
 
 		[Fact]
 		public void Run_ExitsWithExitCommand()
@@ -878,5 +890,7 @@ namespace DiceEquationCLITests
 			Assert.Contains("saved", result);
 			Assert.Contains("test", result);
 		}
+
+		#endregion Run Method Tests
 	}
 }

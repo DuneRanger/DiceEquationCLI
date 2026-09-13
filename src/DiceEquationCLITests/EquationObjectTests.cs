@@ -30,7 +30,7 @@ namespace DiceEquationCLITests
 
 	public class EquationObjectTests
 	{
-		// ========== Constructor Tests ==========
+		#region Constructor Tests
 
 		[Fact]
 		public void Equation_Constructor_SetsEquationString()
@@ -46,7 +46,8 @@ namespace DiceEquationCLITests
 			Assert.Equal("", equation.Name);
 		}
 
-		// ========== Name Property Tests ==========
+		#endregion Constructor Tests
+		#region Name Property Tests
 
 		[Fact]
 		public void Equation_SetName_UpdatesName()
@@ -66,7 +67,8 @@ namespace DiceEquationCLITests
 			Assert.Equal("second", equation.Name);
 		}
 
-		// ========== EquationTree Property Tests ==========
+		#endregion Name Property Tests
+		#region EquationTree Property Tests
 
 		[Fact]
 		public void Equation_SetEquationTree_StoresNode()
@@ -86,7 +88,8 @@ namespace DiceEquationCLITests
 			equation.SetEquationTree(node2);
 		}
 
-		// ========== Distribution Property Tests ==========
+		#endregion EquationTree Property Tests
+		#region Distribution Property Tests
 
 		[Fact]
 		public void Equation_SetDistribution()
@@ -129,7 +132,8 @@ namespace DiceEquationCLITests
 			Assert.Throws<InvalidOperationException>(() => equation.GetDistribution());
 		}
 
-		// ========== Evaluate Tests ==========
+		#endregion Distribution Property Tests
+		#region Evaluate Tests
 
 
 		[Fact]
@@ -180,5 +184,7 @@ namespace DiceEquationCLITests
 
 			Assert.Equal(123.0, result);
 		}
+
+		#endregion Evaluate Tests
 	}
 }

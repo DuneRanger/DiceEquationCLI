@@ -4,7 +4,7 @@ namespace DiceEquationCLITests
 {
 	public class EquationTreeParserTests
 	{
-		// ========== Helper Functions ==========
+		#region Helper Functions
 
 		private string[] stringToCharStringArray_NoWhitespace(string input)
 		{
@@ -41,7 +41,8 @@ namespace DiceEquationCLITests
 			for (int i = 0; i < count; ++i) root.Evaluate();
 		}
 
-		// ========== Operator Registration Tests ==========
+		#endregion Helper Functions
+		#region Operator Registration Tests
 
 		[Fact]
 		public void OperatorSymbols_IncludesInitialOperators()
@@ -96,7 +97,8 @@ namespace DiceEquationCLITests
 			Assert.Contains('!', symbols);
 		}
 
-		// ========== EquationToTokens Tests ==========
+		#endregion Operator Registration Tests
+		#region EquationToTokens Tests
 
 		[Theory]
 		[InlineData("1")]
@@ -175,7 +177,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(expectedTokens, tokens);
 		}
 
-		// ========== InfixToPostfix Tests ==========
+		#endregion EquationToTokens Tests
+		#region InfixToPostfix Tests
 
 		[Theory]
 		[InlineData("1 + 2", "1 2 +")]
@@ -257,7 +260,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(postfixArray, result);
 		}
 
-		// ========== Simple Expression Tests ==========
+		#endregion InfixToPostfix Tests
+		#region Simple Expression Tests
 
 		[Fact]
 		public void ConstructTree_SingleNumber()
@@ -340,7 +344,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(-5, tree.Evaluate());
 		}
 
-		// ========== Operator Priority Tests ==========
+		#endregion Simple Expression Tests
+		#region Operator Priority Tests
 
 		[Theory]
 		[InlineData("2 + 3 * 4", 14)]
@@ -375,7 +380,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(expected, tree.Evaluate());
 		}
 
-		// ========== Complex Expression/Scenario Tests ==========
+		#endregion Operator Priority Tests
+		#region Complex Expression/Scenario Tests
 
 		[Theory]
 		[InlineData("5 + 1d6", new double[] { 6, 7, 8, 9, 10, 11 })]
@@ -425,7 +431,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(expected, tree.Evaluate());
 		}
 
-		// ========== Whitespace Tests ==========
+		#endregion
+		#region Whitespace Tests
 		// Just a small test, since internally it uses EquationToTokens which has much better whitespace tests
 
 		[Theory]
@@ -442,7 +449,8 @@ namespace DiceEquationCLITests
 			Assert.Equal(expected, tree.Evaluate());
 		}
 
-		// ========== Error Handling Tests ==========
+		#endregion Complex Expression/Scenario Tests
+		#region Error Handling Tests
 
 		[Theory]
 		[InlineData("1 + ")]         // Missing operand
@@ -477,5 +485,7 @@ namespace DiceEquationCLITests
 			var parser = new EquationTreeParser();
 			Assert.Throws<ArgumentException>(() => parser.ConstructTree(expression));
 		}
+
+		#endregion Error Handling Tests
 	}
 }
