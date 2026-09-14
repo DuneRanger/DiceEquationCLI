@@ -161,7 +161,7 @@ public class DiceEquationAPI
             if (_exit) break;
             _outputWriter.Write("> ");
             string? input = _inputReader.ReadLine();
-            if (input == null) continue;
+            if (string.IsNullOrWhiteSpace(input)) continue;
             var command = CommandParser.Parse(input);
             _commands.TryGetValue(command.Name, out var commandAction);
             if (commandAction == null)
