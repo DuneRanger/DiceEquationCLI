@@ -64,7 +64,7 @@ public class DiceSimulationNode : BinaryOperatorNode
 		{
 			throw new ArgumentException("Invalid dice sides: Must be a positive integer.");
 		}
-        if (rightValue >= Int64.MaxValue) throw new ArgumentException($"Invalid dice sides: dice cannot have more than {Int64.MaxValue - 1} sides");
+        if (rightValue >= Int64.MaxValue) throw new ArgumentException($"Invalid dice sides: dice cannot have more than {(double)(Int64.MaxValue - 1)} sides");
         if (rightValue == 0) return 0;
 
         double result = 0;
