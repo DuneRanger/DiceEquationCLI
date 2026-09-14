@@ -10,7 +10,7 @@ namespace LibraryTests
 {
 	public class DiceNumberTests
 	{
-		// ========== Helper Assert Functions ==========
+		#region Helper Assert Functions
 		private void AssertDistributionEquals<T>(IDiscreteDistribution<T> expected, IDiscreteDistribution<T> actual, double tolerance = 1e-10)
 			where T : notnull
 		{
@@ -24,7 +24,8 @@ namespace LibraryTests
 				"Dictionaries are not equal");
 		}
 
-		// ========== Basic DistributionDice Tests ==========
+		#endregion Helper Assert Functions
+		#region Basic DistributionDice Tests
 
 		[Fact]
 		public void DistributionDice_ZeroRolls_ReturnsZero()
@@ -79,7 +80,8 @@ namespace LibraryTests
 			Assert.Throws<ArgumentException>(() => new DistributionDice<int>(baseDist, -1));
 		}
 
-		// ========== Basic UniformRangeDice Tests ==========
+		#endregion Basic DistributionDice Tests
+		#region Basic UniformRangeDice Tests
 
 		[Fact]
 		public void UniformRangeDice_ZeroRolls_ReturnsZero()
@@ -135,5 +137,7 @@ namespace LibraryTests
 		{
 			Assert.Throws<ArgumentException>(() => new UniformRangeDice(1, 6, -1));
 		}
+		
+		#endregion Basic UniformRangeDice Tests
 	}
 }

@@ -145,8 +145,7 @@ namespace DiceEquationCLITests
 			var (api, input, output) = GetNewApiInstance();
 
 			api.ExitProgram(new string[] { });
-			// Since I can't actually check the flag is set and anything to do with Run should be in Run tests
-			// Then this test will just make sure the function isn't throwing for no reason
+			api.Run(); // should instantly break out of the loop
 		}
 
 		[Fact]
@@ -473,8 +472,10 @@ namespace DiceEquationCLITests
 			api.ShowEquationDistribution(new[] { "test" });
 
 			var result = output.ToString();
-			// Not sure how to check this best tbh
-			// For now I'll take not throwing as a success
+			Assert.Contains("1", result);
+			Assert.Contains("2", result);
+			Assert.Contains("3", result);
+			Assert.Contains("4", result);
 		}
 
 		[Fact]

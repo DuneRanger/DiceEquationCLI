@@ -87,7 +87,7 @@ namespace LibraryTests
 		#region ProbabilisticNumber<T> Probability/Value Modification Tests
 
 		[Fact]
-		public void Normalize_AdjustsProbabilities()
+		public void Normalize_AdjustsHigherProbabilities()
 		{
 			var values = new int[] { 1, 2, 3 };
 			var probs = new double[] { 1, 2, 3 };
@@ -103,6 +103,25 @@ namespace LibraryTests
 			Assert.Equal(1.0 / sumProbs, dict[1], 10);
 			Assert.Equal(2.0 / sumProbs, dict[2], 10);
 			Assert.Equal(3.0 / sumProbs, dict[3], 10);
+		}
+		
+		[Fact]
+		public void Normalize_AdjustsLowerProbabilities()
+		{
+			var values = new int[] { 1, 2, 3 };
+			var probs = new double[] { 0.1, 0.2, 0.3 };
+			var sumProbs = probs.Sum();
+
+			var prob = new ProbabilisticNumber<int>(values, probs);
+
+			prob.Normalize();
+			var dict = prob.ToDictionary();
+
+			double sum = dict.Values.Sum();
+			Assert.Equal(1.0, sum, 10);
+			Assert.Equal(0.1 / sumProbs, dict[1], 10);
+			Assert.Equal(0.2 / sumProbs, dict[2], 10);
+			Assert.Equal(0.3 / sumProbs, dict[3], 10);
 		}
 
 		[Fact]
