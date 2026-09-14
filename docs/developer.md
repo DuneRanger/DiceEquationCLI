@@ -357,8 +357,9 @@ It saves the information in an `EquationOperator` object, which it saves in eith
 This means that the uniqueness of the symbol of each operator applies only among the same parity.
 
 Here is a table of the operators added during construction:
+
 | Symbol | Arity  | Priority | Node Class           |
-| ------ | ------ | -------- | -------------------- |  |  |
+| ------ | ------ | -------- | -------------------- |
 | `d`    | Binary | 10       | `DiceSimulationNode` |
 | `-`    | Unary  | 10       | `NegationNode`       |
 | `*`    | Binary | 5        | `MultiplicationNode` |
