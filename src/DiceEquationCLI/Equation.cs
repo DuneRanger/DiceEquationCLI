@@ -82,7 +82,7 @@ public class Equation
         {
             var distribution = _equationTree.GetDistribution();
             _distribution = distribution;
-            if (GetEquationTreeNodeCount(_equationTree) < distribution.Count) _evaluateDistribution = true;
+            if (GetEquationTreeNodeCount(_equationTree) > distribution.Count / 2) _evaluateDistribution = true;
 			return distribution;
         }
         throw new InvalidOperationException("No distribution available");
