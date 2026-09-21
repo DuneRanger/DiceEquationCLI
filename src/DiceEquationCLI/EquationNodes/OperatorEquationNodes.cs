@@ -102,7 +102,8 @@ public class DiceSimulationNode : BinaryOperatorNode
 			{
 				double rightValue = rightPair.Key;
 				double rightProb = rightPair.Value;
-				var diceDistribution = new UniformRangeDice(1, (long)rightValue, (int)leftValue).ToDictionary();
+				long rangeMin = rightValue == 0 ? 0 : 1;
+				var diceDistribution = new UniformRangeDice(rangeMin, (long)rightValue, (int)leftValue).ToDictionary();
 				foreach (var dicePair in diceDistribution.ToDictionary())
 				{
 					double diceValue = dicePair.Key;
