@@ -403,12 +403,12 @@ namespace DiceEquationCLITests
 		}
 
 		[Theory]
-		[InlineData("(2d2 / 2)d6", 20)]       // Throws because of non-ineger roll count
-		[InlineData("2d(2d2 / 2)", 20)]       // Throws because of non-ineger dice sides
+		[InlineData("(2d2 / 2)d6", 20)]       // Throws because of non-integer roll count
+		[InlineData("2d(2d2 / 2)", 20)]       // Throws because of non-integer dice sides
 		[InlineData("(-2)d5", 1)]             // Throws because of negative roll count
-		[InlineData("-2d5", 1)]             // Throws because of negative roll count
+		[InlineData("-2d5", 1)]               // Throws because of negative roll count
 		[InlineData("2d-5", 1)]               // Throws because of negative dice sides
-		[InlineData("2d(-5)", 1)]               // Throws because of negative dice sides
+		[InlineData("2d(-5)", 1)]             // Throws because of negative dice sides
 		public void ConstructTree_ComplexDiceSimulation_ErrorSituations(string expression, int evaluationCount)
 		{
 			var parser = new EquationTreeParser();
